@@ -1,0 +1,13 @@
+presensi.bak database terupdate
+
+cara restore tinggal di klik run administrator restore_presensi.bat
+- close dulu koneksinya postgreee
+- baru jalankan restore_presensi.bat
+
+database lama di komputer kamu akan dibackup terlebih dahulu 
+contoh presensi_backup_2026-10-01_09-30-42.bak
+habis backup baru mulai merestore
+
+adapun bagian yang perlu diperhatikan adalah bagian ini 
+set "PG_BIN=D:\DatabasePostgree\bin" (file execute restore_presensi.bat)
+sesuaikan dengan path installan Postgree nya.
