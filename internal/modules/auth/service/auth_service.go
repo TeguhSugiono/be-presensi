@@ -246,8 +246,6 @@ func (s *authService) SetupAdmin(req dto.SetupAdminRequest) (*dto.UserResponse, 
 		IsActive:     true,
 		CreatedBy:    nil,
 		CreatedAt:    now,
-		UpdatedBy:    nil,
-		UpdatedAt:    now,
 		IsDeleted:    false,
 	}
 

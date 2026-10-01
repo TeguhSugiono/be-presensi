@@ -13,10 +13,10 @@ type User struct {
 	PhoneNumber    string  `gorm:"column:phone_number;type:varchar(20);not null"`
 	IsActive       bool    `gorm:"column:is_active;not null;default:true"`
 
-	CreatedBy *int64    `gorm:"column:created_by"`
-	CreatedAt time.Time `gorm:"column:created_at;not null"`
-	UpdatedBy *int64    `gorm:"column:updated_by"`
-	UpdatedAt time.Time `gorm:"column:updated_at;not null"`
+	CreatedBy *int64     `gorm:"column:created_by"`
+	CreatedAt time.Time  `gorm:"column:created_at;not null"`
+	UpdatedBy *int64     `gorm:"column:updated_by"`
+	UpdatedAt *time.Time `gorm:"column:updated_at;autoUpdateTime:false"`
 
 	IsDeleted bool `gorm:"column:is_deleted;not null;default:false"`
 }

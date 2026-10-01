@@ -22,11 +22,11 @@ var (
 )
 
 type WorkScheduleService interface {
-	FindAll(ctx context.Context) ([]dto.WorkScheduleResponse, error)
+	FindAll(ctx context.Context) ([]*dto.WorkScheduleResponse, error)
 	FindByID(ctx context.Context, id int) (*dto.WorkScheduleResponse, error)
-	Create(ctx context.Context, req dto.CreateWorkScheduleRequest) (*dto.WorkScheduleResponse, error)
-	Update(ctx context.Context, id int, req dto.UpdateWorkScheduleRequest) (*dto.WorkScheduleResponse, error)
-	Delete(ctx context.Context, id int) error
+	Create(ctx context.Context, req *dto.CreateWorkScheduleRequest, userID *int64) (*dto.WorkScheduleResponse, error)
+	Update(ctx context.Context, id int, req *dto.UpdateWorkScheduleRequest, userID *int64) (*dto.WorkScheduleResponse, error)
+	Delete(ctx context.Context, id int, userID *int64) error
 }
 
 type workScheduleService struct {
@@ -43,14 +43,14 @@ func NewWorkScheduleService(
 
 func (s *workScheduleService) FindAll(
 	ctx context.Context,
-) ([]dto.WorkScheduleResponse, error) {
+) ([]*dto.WorkScheduleResponse, error) {
 
 	schedules, err := s.repository.FindAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	result := make([]dto.WorkScheduleResponse, 0, len(schedules))
+	result := make([]*dto.WorkScheduleResponse, 0, len(schedules))
 
 	for _, schedule := range schedules {
 		result = append(result, toResponse(schedule))
@@ -76,12 +76,13 @@ func (s *workScheduleService) FindByID(
 
 	result := toResponse(*schedule)
 
-	return &result, nil
+	return result, nil
 }
 
 func (s *workScheduleService) Create(
 	ctx context.Context,
-	req dto.CreateWorkScheduleRequest,
+	req *dto.CreateWorkScheduleRequest,
+	userID *int64,
 ) (*dto.WorkScheduleResponse, error) {
 
 	name := strings.TrimSpace(req.Name)
@@ -108,11 +109,16 @@ func (s *workScheduleService) Create(
 		return nil, ErrInvalidTimeRange
 	}
 
+	now := time.Now()
+
 	schedule := &entity.WorkSchedule{
 		Name:       name,
 		StartTime:  req.StartTime,
 		EndTime:    req.EndTime,
 		IsFlexible: req.IsFlexible,
+		CreatedBy:  userID,
+		CreatedAt:  now,
+		IsDeleted:  false,
 	}
 
 	if err := s.repository.Create(ctx, schedule); err != nil {
@@ -121,13 +127,14 @@ func (s *workScheduleService) Create(
 
 	result := toResponse(*schedule)
 
-	return &result, nil
+	return result, nil
 }
 
 func (s *workScheduleService) Update(
 	ctx context.Context,
 	id int,
-	req dto.UpdateWorkScheduleRequest,
+	req *dto.UpdateWorkScheduleRequest,
+	userID *int64,
 ) (*dto.WorkScheduleResponse, error) {
 
 	schedule, err := s.repository.FindByID(ctx, id)
@@ -169,18 +176,24 @@ func (s *workScheduleService) Update(
 	schedule.EndTime = req.EndTime
 	schedule.IsFlexible = req.IsFlexible
 
+	// CreatedBy dan CreatedAt tetap.
+	schedule.UpdatedBy = userID
+	now := time.Now()
+	schedule.UpdatedAt = &now
+
 	if err := s.repository.Update(ctx, schedule); err != nil {
 		return nil, err
 	}
 
 	result := toResponse(*schedule)
 
-	return &result, nil
+	return result, nil
 }
 
 func (s *workScheduleService) Delete(
 	ctx context.Context,
 	id int,
+	userID *int64,
 ) error {
 
 	schedule, err := s.repository.FindByID(ctx, id)
@@ -194,7 +207,9 @@ func (s *workScheduleService) Delete(
 	}
 
 	schedule.IsDeleted = true
-	schedule.UpdatedAt = time.Now()
+	schedule.UpdatedBy = userID
+	now := time.Now()
+	schedule.UpdatedAt = &now
 
 	return s.repository.Delete(ctx, schedule)
 }
@@ -239,9 +254,9 @@ func validateTimeRange(startTime *string, endTime *string) bool {
 
 func toResponse(
 	schedule entity.WorkSchedule,
-) dto.WorkScheduleResponse {
+) *dto.WorkScheduleResponse {
 
-	return dto.WorkScheduleResponse{
+	return &dto.WorkScheduleResponse{
 		ID:         schedule.ID,
 		Name:       schedule.Name,
 		StartTime:  schedule.StartTime,

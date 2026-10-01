@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"be-presensi/internal/modules/auth/middleware"
 	"be-presensi/internal/modules/work_schedule/dto"
 	"be-presensi/internal/modules/work_schedule/service"
 	"be-presensi/internal/response"
@@ -99,9 +100,20 @@ func (h *WorkScheduleHandler) Create(c *gin.Context) {
 		return
 	}
 
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Error(
+			c,
+			http.StatusUnauthorized,
+			"unauthorized",
+		)
+		return
+	}
+
 	schedule, err := h.service.Create(
 		c.Request.Context(),
-		req,
+		&req,
+		&userID,
 	)
 
 	if err != nil {
@@ -176,10 +188,21 @@ func (h *WorkScheduleHandler) Update(c *gin.Context) {
 		return
 	}
 
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Error(
+			c,
+			http.StatusUnauthorized,
+			"unauthorized",
+		)
+		return
+	}
+
 	schedule, err := h.service.Update(
 		c.Request.Context(),
 		id,
-		req,
+		&req,
+		&userID,
 	)
 
 	if err != nil {
@@ -250,9 +273,20 @@ func (h *WorkScheduleHandler) Delete(c *gin.Context) {
 		return
 	}
 
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Error(
+			c,
+			http.StatusUnauthorized,
+			"unauthorized",
+		)
+		return
+	}
+
 	if err := h.service.Delete(
 		c.Request.Context(),
 		id,
+		&userID,
 	); err != nil {
 
 		if errors.Is(err, service.ErrWorkScheduleNotFound) {
@@ -276,6 +310,6 @@ func (h *WorkScheduleHandler) Delete(c *gin.Context) {
 		c,
 		http.StatusOK,
 		"work schedule deleted successfully",
-		nil,
+		[]interface{}{},
 	)
 }

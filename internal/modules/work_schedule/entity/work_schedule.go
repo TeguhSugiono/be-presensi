@@ -9,11 +9,10 @@ type WorkSchedule struct {
 	EndTime    *string `gorm:"column:end_time;type:time"`
 	IsFlexible bool    `gorm:"column:is_flexible;not null;default:false"`
 
-	CreatedBy *int64    `gorm:"column:created_by"`
-	CreatedAt time.Time `gorm:"column:created_at;not null"`
-
-	UpdatedBy *int64    `gorm:"column:updated_by"`
-	UpdatedAt time.Time `gorm:"column:updated_at;not null"`
+	CreatedBy *int64     `gorm:"column:created_by"`
+	CreatedAt time.Time  `gorm:"column:created_at;not null"`
+	UpdatedBy *int64     `gorm:"column:updated_by"`
+	UpdatedAt *time.Time `gorm:"column:updated_at;autoUpdateTime:false"`
 
 	IsDeleted bool `gorm:"column:is_deleted;not null;default:false"`
 }

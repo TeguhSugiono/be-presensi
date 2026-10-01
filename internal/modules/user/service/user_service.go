@@ -139,9 +139,6 @@ func (s *userService) Create(
 
 		CreatedBy: userID,
 		CreatedAt: now,
-		UpdatedBy: userID,
-		UpdatedAt: now,
-
 		IsDeleted: false,
 	}
 
@@ -216,7 +213,8 @@ func (s *userService) Update(
 	user.IsActive = req.IsActive
 
 	user.UpdatedBy = userID
-	user.UpdatedAt = time.Now()
+	now := time.Now()
+	user.UpdatedAt = &now
 
 	if err := s.repo.Update(user); err != nil {
 		return nil, err
@@ -241,7 +239,8 @@ func (s *userService) Delete(id int64, userID *int64) error {
 	user.IsDeleted = true
 	user.IsActive = false
 	user.UpdatedBy = userID
-	user.UpdatedAt = time.Now()
+	now := time.Now()
+	user.UpdatedAt = &now
 
 	return s.repo.Update(user)
 }

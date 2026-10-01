@@ -53,11 +53,21 @@
         {
           "name": "Create Role",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_06p6}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"name\": \"Karyawan\",\r\n//     \"is_teacher\": false\r\n// }\r\n\r\n// {\r\n//     \"name\": \"Admin\",\r\n//     \"is_teacher\": false\r\n// }\r\n\r\n{\r\n    \"name\": \"Guru\",\r\n    \"is_teacher\": true\r\n}",
+              "raw": "{\r\n    \"name\": \"Karyawan\",\r\n    \"is_teacher\": false\r\n}\r\n\r\n\r\n// {\r\n//     \"name\": \"Guru\",\r\n//     \"is_teacher\": true\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -180,20 +190,13 @@
           "name": "Create Work Schedule",
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{json_web_token_19hr}}",
-                  "type": "string"
-                }
-              ]
+              "type": "bearer"
             },
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"name\": \"Jam Kerja Normal\",\r\n//     \"start_time\": \"08:00\",\r\n//     \"end_time\": \"16:00\",\r\n//     \"is_flexible\": false\r\n// }\r\n\r\n{\r\n    \"name\": \"Guru Flexible\",\r\n    \"start_time\": null,\r\n    \"end_time\": null,\r\n    \"is_flexible\": true\r\n}",
+              "raw": "// {\r\n//     \"name\": \"Jam Kerja Normal\",\r\n//     \"start_time\": \"08:00\",\r\n//     \"end_time\": \"16:00\",\r\n//     \"is_flexible\": false\r\n// }\r\n\r\n// {\r\n//     \"name\": \"Guru Flexible\",\r\n//     \"start_time\": null,\r\n//     \"end_time\": null,\r\n//     \"is_flexible\": true\r\n// }\r\n\r\n{\r\n  \"name\": \"Jam Kerja Test Audit\",\r\n  \"start_time\": \"08:00\",\r\n  \"end_time\": \"14:00\",\r\n  \"is_flexible\": false\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -411,7 +414,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_19hr}}",
+                  "value": "{{json_web_token_001t}}",
                   "type": "string"
                 }
               ]
@@ -420,7 +423,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"role_id\": 3,\r\n    \"work_schedule_id\": 1,\r\n    \"nip\": \"222222222\",\r\n    \"full_name\": \"Staff Sekolah\",\r\n    \"email\": \"staff@gmail.com\",\r\n    \"password\": \"87654345\",\r\n    \"phone_number\": \"466767\",\r\n    \"is_active\": true\r\n}",
+              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n// {\r\n//   \"role_id\": 3,\r\n//   \"work_schedule_id\": 2,\r\n//   \"nip\": \"123456789\",\r\n//   \"full_name\": \"Guru Testzz\",\r\n//   \"email\": \"gurzzu.test@gmail.com\",\r\n//   \"password\": \"paszzsword123\",\r\n//   \"phone_number\": \"08123zz456789\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n{\r\n  \"role_id\": 2,\r\n  \"work_schedule_id\": 1,\r\n  \"nip\": \"34534545\",\r\n  \"full_name\": \"Jaka tingkir\",\r\n  \"email\": \"jaka@gmail.com\",\r\n  \"password\": \"jakatingkir\",\r\n  \"phone_number\": \"2423423344\",\r\n  \"is_active\": true\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -449,7 +452,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"role_id\": 2,\r\n    \"work_schedule_id\": 1,\r\n    \"nip\": \"1987654324\",\r\n    \"full_name\": \"Budi Santoso\",\r\n    \"email\": \"budi.updated@example.com\",\r\n    \"phone_number\": \"081299999999\",\r\n    \"is_active\": true\r\n}",
+              "raw": "{\r\n  \"role_id\": 2,\r\n  \"work_schedule_id\": 1,\r\n  \"nip\": \"34534545\",\r\n  \"full_name\": \"Jakak tingkir\",\r\n  \"email\": \"jakak@gmail.com\",\r\n  \"phone_number\": \"2423423344\",\r\n  \"is_active\": true\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -457,7 +460,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/api/users/1",
+              "raw": "http://localhost:8080/api/users/8",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -466,7 +469,7 @@
               "path": [
                 "api",
                 "users",
-                "1"
+                "8"
               ]
             }
           },
@@ -496,6 +499,16 @@
       ]
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{json_web_token_001t}}",
+        "type": "string"
+      }
+    ]
+  },
   "variable": [
     {
       "key": "json_web_token_157x",
@@ -503,6 +516,22 @@
     },
     {
       "key": "json_web_token_19hr",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0os5",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0d61",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_06p6",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_001t",
       "secret": true
     }
   ]
