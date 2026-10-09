@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"be-presensi/internal/modules/auth/middleware"
 	"be-presensi/internal/modules/work_schedule/dto"
@@ -43,6 +44,68 @@ func (h *WorkScheduleHandler) FindAll(c *gin.Context) {
 		"work schedules retrieved successfully",
 		schedules,
 	)
+}
+
+func (h *WorkScheduleHandler) FindAllPaginated(c *gin.Context) {
+	search := strings.TrimSpace(c.Query("search"))
+
+	page := 1
+	if value := c.Query("page"); value != "" {
+		parsedPage, err := strconv.Atoi(value)
+		if err != nil || parsedPage < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"page must be a positive integer",
+			)
+			return
+		}
+		page = parsedPage
+	}
+
+	perPage := 10
+	if value := c.Query("per_page"); value != "" {
+		parsedPerPage, err := strconv.Atoi(value)
+		if err != nil || parsedPerPage < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"per_page must be a positive integer",
+			)
+			return
+		}
+		perPage = parsedPerPage
+	}
+
+	if perPage > 100 {
+		perPage = 100
+	}
+
+	schedules, total, err := h.service.FindAllPaginated(
+		c.Request.Context(),
+		search,
+		page,
+		perPage,
+	)
+	if err != nil {
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to get work schedules",
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "work schedules retrieved successfully",
+		"data":    schedules,
+		"meta": gin.H{
+			"total":    total,
+			"page":     page,
+			"per_page": perPage,
+		},
+	})
 }
 
 func (h *WorkScheduleHandler) FindByID(c *gin.Context) {

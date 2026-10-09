@@ -17,4 +17,5 @@ func RegisterUserRoutes(router *gin.RouterGroup, handler *handler.UserHandler) {
 	users.POST("", handler.Create)
 	users.PUT("/:id", handler.Update)
 	users.DELETE("/:id", handler.Delete)
+	users.GET("/paginated", handler.FindAllPaginated)
 }

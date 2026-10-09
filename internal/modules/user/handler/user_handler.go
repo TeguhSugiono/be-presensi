@@ -4,10 +4,12 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"be-presensi/internal/modules/auth/middleware"
 	"be-presensi/internal/modules/user/dto"
 	"be-presensi/internal/modules/user/service"
+	"be-presensi/internal/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,6 +38,68 @@ func (h *UserHandler) FindAll(c *gin.Context) {
 		"success": true,
 		"message": "users retrieved successfully",
 		"data":    users,
+	})
+}
+
+func (h *UserHandler) FindAllPaginated(c *gin.Context) {
+	search := strings.TrimSpace(c.Query("search"))
+
+	page := 1
+	perPage := 10
+
+	if value := c.Query("page"); value != "" {
+		parsed, err := strconv.Atoi(value)
+		if err != nil || parsed < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"page must be a positive integer",
+			)
+			return
+		}
+		page = parsed
+	}
+
+	if value := c.Query("per_page"); value != "" {
+		parsed, err := strconv.Atoi(value)
+		if err != nil || parsed < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"per_page must be a positive integer",
+			)
+			return
+		}
+		perPage = parsed
+	}
+
+	if perPage > 100 {
+		perPage = 100
+	}
+
+	users, total, err := h.service.FindAllPaginated(
+		search,
+		page,
+		perPage,
+	)
+	if err != nil {
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to get users",
+		)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "users retrieved successfully",
+		"data":    users,
+		"meta": gin.H{
+			"total":    total,
+			"page":     page,
+			"per_page": perPage,
+		},
 	})
 }
 

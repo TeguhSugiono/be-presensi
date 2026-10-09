@@ -37,6 +37,13 @@ type RoleService interface {
 		id int,
 		userID *int64,
 	) error
+
+	FindAllPaginated(
+		ctx context.Context,
+		search string,
+		page int,
+		perPage int,
+	) ([]*dto.RoleResponse, int64, error)
 }
 
 type roleService struct {
@@ -67,6 +74,33 @@ func (s *roleService) FindAll(
 	}
 
 	return result, nil
+}
+
+func (s *roleService) FindAllPaginated(
+	ctx context.Context,
+	search string,
+	page int,
+	perPage int,
+) ([]*dto.RoleResponse, int64, error) {
+	offset := (page - 1) * perPage
+
+	roles, total, err := s.repository.FindAllPaginated(
+		ctx,
+		search,
+		perPage,
+		offset,
+	)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	result := make([]*dto.RoleResponse, 0, len(roles))
+
+	for _, role := range roles {
+		result = append(result, toResponse(role))
+	}
+
+	return result, total, nil
 }
 
 func (s *roleService) FindByID(

@@ -30,6 +30,42 @@
           "response": []
         },
         {
+          "name": "Get Roles Paging",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/roles/paginated?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "roles",
+                "paginated"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "gu",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get Roles With ID",
           "request": {
             "method": "GET",
@@ -160,6 +196,52 @@
               "path": [
                 "api",
                 "work-schedules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Work Schedule Paging",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxNjY4ODM3LCJpYXQiOjE3OTE1ODI0Mzd9.g2ulWj10XMP2aZFybioOzYtwyd0Cp2VAE7rEEBmg1-A",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/work-schedules/paginated?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "work-schedules",
+                "paginated"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "guru",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
               ]
             }
           },
@@ -386,6 +468,52 @@
           "response": []
         },
         {
+          "name": "Get User Paging",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxNjY4ODM3LCJpYXQiOjE3OTE1ODI0Mzd9.g2ulWj10XMP2aZFybioOzYtwyd0Cp2VAE7rEEBmg1-A",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/paginated?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "paginated"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "guru",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get User With ID",
           "request": {
             "method": "GET",
@@ -504,35 +632,9 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{json_web_token_001t}}",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxNjY4ODM3LCJpYXQiOjE3OTE1ODI0Mzd9.g2ulWj10XMP2aZFybioOzYtwyd0Cp2VAE7rEEBmg1-A",
         "type": "string"
       }
     ]
-  },
-  "variable": [
-    {
-      "key": "json_web_token_157x",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_19hr",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_0os5",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_0d61",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_06p6",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_001t",
-      "secret": true
-    }
-  ]
+  }
 }

@@ -13,6 +13,11 @@ type UserRepository interface {
 	FindByNIP(nip string) (*entity.User, error)
 	Create(user *entity.User) error
 	Update(user *entity.User) error
+	FindAllPaginated(
+		search string,
+		limit int,
+		offset int,
+	) ([]*entity.User, int64, error)
 }
 
 type userRepository struct {
@@ -34,6 +39,44 @@ func (r *userRepository) FindAll() ([]entity.User, error) {
 		Find(&users).Error
 
 	return users, err
+}
+
+func (r *userRepository) FindAllPaginated(
+	search string,
+	limit int,
+	offset int,
+) ([]*entity.User, int64, error) {
+	var users []*entity.User
+	var total int64
+
+	query := r.db.Model(&entity.User{}).
+		Where("is_deleted = ?", false)
+
+	if search != "" {
+		keyword := "%" + search + "%"
+		query = query.Where(
+			"full_name ILIKE ? OR email ILIKE ? OR nip ILIKE ?",
+			keyword,
+			keyword,
+			keyword,
+		)
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	err := query.
+		Order("id ASC").
+		Limit(limit).
+		Offset(offset).
+		Find(&users).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return users, total, nil
 }
 
 func (r *userRepository) FindByID(id int64) (*entity.User, error) {

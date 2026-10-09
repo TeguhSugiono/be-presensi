@@ -16,6 +16,7 @@ type RoleRepository interface {
 	Create(ctx context.Context, role *entity.Role) error
 	Update(ctx context.Context, role *entity.Role) error
 	Delete(ctx context.Context, role *entity.Role) error
+	FindAllPaginated(ctx context.Context, search string, limit int, offset int) ([]entity.Role, int64, error)
 }
 
 type roleRepository struct {
@@ -37,6 +38,40 @@ func (r *roleRepository) FindAll(ctx context.Context) ([]entity.Role, error) {
 		Find(&roles).Error
 
 	return roles, err
+}
+
+func (r *roleRepository) FindAllPaginated(
+	ctx context.Context,
+	search string,
+	limit int,
+	offset int,
+) ([]entity.Role, int64, error) {
+	var roles []entity.Role
+	var total int64
+
+	query := r.db.WithContext(ctx).
+		Model(&entity.Role{}).
+		Where("is_deleted = ?", false)
+
+	if search != "" {
+		query = query.Where("name ILIKE ?", "%"+search+"%")
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	err := query.
+		Order("id ASC").
+		Limit(limit).
+		Offset(offset).
+		Find(&roles).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return roles, total, nil
 }
 
 func (r *roleRepository) FindByID(ctx context.Context, id int) (*entity.Role, error) {

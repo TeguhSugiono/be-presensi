@@ -20,4 +20,5 @@ func RegisterRoleRoutes(
 	roles.POST("", handler.Create)
 	roles.PUT("/:id", handler.Update)
 	roles.DELETE("/:id", handler.Delete)
+	roles.GET("/paginated", handler.FindAllPaginated)
 }

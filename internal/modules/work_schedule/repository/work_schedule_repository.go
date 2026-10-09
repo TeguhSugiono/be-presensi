@@ -15,6 +15,12 @@ type WorkScheduleRepository interface {
 	Create(ctx context.Context, schedule *entity.WorkSchedule) error
 	Update(ctx context.Context, schedule *entity.WorkSchedule) error
 	Delete(ctx context.Context, schedule *entity.WorkSchedule) error
+	FindAllPaginated(
+		ctx context.Context,
+		search string,
+		limit int,
+		offset int,
+	) ([]entity.WorkSchedule, int64, error)
 }
 
 type workScheduleRepository struct {
@@ -36,6 +42,40 @@ func (r *workScheduleRepository) FindAll(ctx context.Context) ([]entity.WorkSche
 		Find(&schedules).Error
 
 	return schedules, err
+}
+
+func (r *workScheduleRepository) FindAllPaginated(
+	ctx context.Context,
+	search string,
+	limit int,
+	offset int,
+) ([]entity.WorkSchedule, int64, error) {
+	var schedules []entity.WorkSchedule
+	var total int64
+
+	query := r.db.WithContext(ctx).
+		Model(&entity.WorkSchedule{}).
+		Where("is_deleted = ?", false)
+
+	if search != "" {
+		query = query.Where("name ILIKE ?", "%"+search+"%")
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	err := query.
+		Order("id ASC").
+		Limit(limit).
+		Offset(offset).
+		Find(&schedules).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return schedules, total, nil
 }
 
 func (r *workScheduleRepository) FindByID(ctx context.Context, id int) (*entity.WorkSchedule, error) {

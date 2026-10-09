@@ -27,6 +27,11 @@ type UserService interface {
 	Create(req dto.CreateUserRequest, userID *int64) (*dto.UserResponse, error)
 	Update(id int64, req dto.UpdateUserRequest, userID *int64) (*dto.UserResponse, error)
 	Delete(id int64, userID *int64) error
+	FindAllPaginated(
+		search string,
+		page int,
+		perPage int,
+	) ([]*dto.UserResponse, int64, error)
 }
 
 type userService struct {
@@ -57,6 +62,32 @@ func (s *userService) FindAll() ([]dto.UserResponse, error) {
 	}
 
 	return result, nil
+}
+
+func (s *userService) FindAllPaginated(
+	search string,
+	page int,
+	perPage int,
+) ([]*dto.UserResponse, int64, error) {
+	offset := (page - 1) * perPage
+
+	users, total, err := s.repo.FindAllPaginated(
+		search,
+		perPage,
+		offset,
+	)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	result := make([]*dto.UserResponse, 0, len(users))
+
+	for _, user := range users {
+		response := toUserResponse(user)
+		result = append(result, &response)
+	}
+
+	return result, total, nil
 }
 
 func (s *userService) FindByID(id int64) (*dto.UserResponse, error) {

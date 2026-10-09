@@ -17,4 +17,5 @@ func RegisterWorkScheduleRoutes(router *gin.RouterGroup, handler *handler.WorkSc
 	workSchedules.POST("", handler.Create)
 	workSchedules.PUT("/:id", handler.Update)
 	workSchedules.DELETE("/:id", handler.Delete)
+	workSchedules.GET("/paginated", handler.FindAllPaginated)
 }

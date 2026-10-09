@@ -27,6 +27,13 @@ type WorkScheduleService interface {
 	Create(ctx context.Context, req *dto.CreateWorkScheduleRequest, userID *int64) (*dto.WorkScheduleResponse, error)
 	Update(ctx context.Context, id int, req *dto.UpdateWorkScheduleRequest, userID *int64) (*dto.WorkScheduleResponse, error)
 	Delete(ctx context.Context, id int, userID *int64) error
+
+	FindAllPaginated(
+		ctx context.Context,
+		search string,
+		page int,
+		perPage int,
+	) ([]*dto.WorkScheduleResponse, int64, error)
 }
 
 type workScheduleService struct {
@@ -57,6 +64,33 @@ func (s *workScheduleService) FindAll(
 	}
 
 	return result, nil
+}
+
+func (s *workScheduleService) FindAllPaginated(
+	ctx context.Context,
+	search string,
+	page int,
+	perPage int,
+) ([]*dto.WorkScheduleResponse, int64, error) {
+	offset := (page - 1) * perPage
+
+	schedules, total, err := s.repository.FindAllPaginated(
+		ctx,
+		search,
+		perPage,
+		offset,
+	)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	result := make([]*dto.WorkScheduleResponse, 0, len(schedules))
+
+	for _, schedule := range schedules {
+		result = append(result, toResponse(schedule))
+	}
+
+	return result, total, nil
 }
 
 func (s *workScheduleService) FindByID(
