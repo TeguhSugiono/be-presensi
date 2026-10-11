@@ -19,6 +19,7 @@ var (
 	ErrNIPAlreadyExists   = errors.New("nip already exists")
 	ErrRoleNotFound       = errors.New("role not found or inactive")
 	ErrScheduleNotFound   = errors.New("work schedule not found or inactive")
+	ErrAdminRequired      = errors.New("admin access required")
 )
 
 type UserService interface {
@@ -32,6 +33,12 @@ type UserService interface {
 		page int,
 		perPage int,
 	) ([]*dto.UserResponse, int64, error)
+
+	ChangePassword(
+		id int64,
+		newPassword string,
+		userID *int64,
+	) error
 }
 
 type userService struct {
@@ -271,6 +278,70 @@ func (s *userService) Delete(id int64, userID *int64) error {
 	user.IsActive = false
 	user.UpdatedBy = userID
 	now := time.Now()
+	user.UpdatedAt = &now
+
+	return s.repo.Update(user)
+}
+
+func (s *userService) ChangePassword(
+	id int64,
+	newPassword string,
+	userID *int64,
+) error {
+
+	if userID == nil || *userID <= 0 {
+		return ErrAdminRequired
+	}
+
+	var count int64
+
+	err := s.db.
+		Table("users").
+		Joins("JOIN roles ON roles.id = users.role_id").
+		Where(
+			"users.id = ? AND users.is_active = ? AND users.is_deleted = ? AND roles.name = ? AND roles.is_deleted = ?",
+			*userID,
+			true,
+			false,
+			"Admin",
+			false,
+		).
+		Count(&count).Error
+
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return ErrAdminRequired
+	}
+
+	user, err := s.repo.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrUserNotFound
+		}
+
+		return err
+	}
+
+	newPassword = strings.TrimSpace(newPassword)
+	if newPassword == "" {
+		return errors.New("new password cannot be empty")
+	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword(
+		[]byte(newPassword),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		return err
+	}
+
+	now := time.Now()
+
+	user.PasswordHash = string(passwordHash)
+	user.UpdatedBy = userID
 	user.UpdatedAt = &now
 
 	return s.repo.Update(user)

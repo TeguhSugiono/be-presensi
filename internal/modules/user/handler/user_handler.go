@@ -316,3 +316,82 @@ func (h *UserHandler) Delete(c *gin.Context) {
 		"data":    []interface{}{},
 	})
 }
+
+func (h *UserHandler) ChangePassword(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil || id <= 0 {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"invalid user id",
+		)
+		return
+	}
+
+	var req dto.ChangePasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"invalid password request",
+		)
+		return
+	}
+
+	if req.NewPassword != req.ConfirmPassword {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"password confirmation does not match",
+		)
+		return
+	}
+
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Error(
+			c,
+			http.StatusUnauthorized,
+			"unauthorized",
+		)
+		return
+	}
+
+	err = h.service.ChangePassword(
+		id,
+		req.NewPassword,
+		&userID,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrUserNotFound):
+			response.Error(
+				c,
+				http.StatusNotFound,
+				"user not found",
+			)
+
+		case errors.Is(err, service.ErrAdminRequired):
+			response.Error(
+				c,
+				http.StatusForbidden,
+				"admin access required",
+			)
+
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"message": "failed to change password",
+			})
+		}
+		return
+	}
+
+	response.Success(
+		c,
+		http.StatusOK,
+		"user password changed successfully",
+		[]interface{}{},
+	)
+
+}

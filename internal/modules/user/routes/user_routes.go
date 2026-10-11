@@ -18,4 +18,5 @@ func RegisterUserRoutes(router *gin.RouterGroup, handler *handler.UserHandler) {
 	users.PUT("/:id", handler.Update)
 	users.DELETE("/:id", handler.Delete)
 	users.GET("/paginated", handler.FindAllPaginated)
+	users.POST("/:id/change-password", handler.ChangePassword)
 }

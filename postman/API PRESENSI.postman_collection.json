@@ -623,6 +623,47 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Change Password Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0nct}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"new_password\": \"PasswordBaru123!\",\r\n  \"confirm_password\": \"PasswordBaru123!\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/3/change-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "3",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
@@ -636,5 +677,15 @@
         "type": "string"
       }
     ]
-  }
+  },
+  "variable": [
+    {
+      "key": "json_web_token_0te8",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0nct",
+      "secret": true
+    }
+  ]
 }

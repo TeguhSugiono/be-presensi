@@ -31,3 +31,8 @@ type UserResponse struct {
 	PhoneNumber    string  `json:"phone_number"`
 	IsActive       bool    `json:"is_active"`
 }
+
+type ChangePasswordRequest struct {
+	NewPassword     string `json:"new_password" binding:"required,min=8,max=100"`
+	ConfirmPassword string `json:"confirm_password" binding:"required,eqfield=NewPassword"`
+}
