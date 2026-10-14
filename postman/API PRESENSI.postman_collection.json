@@ -12,6 +12,16 @@
         {
           "name": "Get Roles",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJzdWIiOiIyIiwiZXhwIjoxNzkxODgyNDczLCJpYXQiOjE3OTE3OTYwNzN9.38NVGoapWIrUMk-rj1ntfmgTWltccBnG_-86DP03aA4",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
             "url": {
@@ -94,7 +104,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_06p6}}",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJzdWIiOiIyIiwiZXhwIjoxNzkxODgyNDczLCJpYXQiOjE3OTE3OTYwNzN9.38NVGoapWIrUMk-rj1ntfmgTWltccBnG_-86DP03aA4",
                   "type": "string"
                 }
               ]
@@ -103,7 +113,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\": \"Karyawan\",\r\n    \"is_teacher\": false\r\n}\r\n\r\n\r\n// {\r\n//     \"name\": \"Guru\",\r\n//     \"is_teacher\": true\r\n// }",
+              "raw": "{\r\n    \"name\": \"KaryawanXXX\",\r\n    \"is_teacher\": false\r\n}\r\n\r\n\r\n// {\r\n//     \"name\": \"Guru\",\r\n//     \"is_teacher\": true\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -128,11 +138,21 @@
         {
           "name": "Update Role Wtih ID",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxODgyMTkwLCJpYXQiOjE3OTE3OTU3OTB9.NhmTvmsffq580rZS3qrcNbxWtlb48zD4qJyUOLMY8yg",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "PUT",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"name\": \"Staff\",\r\n//     \"is_teacher\": false\r\n// }\r\n\r\n{\r\n    \"name\": \"Guru\",\r\n    \"is_teacher\": true\r\n}\r\n",
+              "raw": "// {\r\n//     \"name\": \"Staff\",\r\n//     \"is_teacher\": false\r\n// }\r\n\r\n// {\r\n//     \"name\": \"Guru\",\r\n//     \"is_teacher\": true\r\n// }\r\n\r\n{\r\n    \"name\": \"AAAAAAAA\",\r\n    \"is_teacher\": false\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -140,7 +160,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/api/roles/3",
+              "raw": "http://localhost:8080/api/roles/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -149,7 +169,7 @@
               "path": [
                 "api",
                 "roles",
-                "3"
+                "4"
               ]
             }
           },
@@ -158,10 +178,20 @@
         {
           "name": "Delete Role With ID",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxODgyMTkwLCJpYXQiOjE3OTE3OTU3OTB9.NhmTvmsffq580rZS3qrcNbxWtlb48zD4qJyUOLMY8yg",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/roles/1",
+              "raw": "http://localhost:8080/api/roles/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -170,7 +200,7 @@
               "path": [
                 "api",
                 "roles",
-                "1"
+                "4"
               ]
             }
           },
@@ -393,7 +423,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"email\": \"teguh@gmail.com\",\r\n    \"password\": \"teguh12345\"\r\n}",
+              "raw": "// {\r\n//     \"email\": \"teguh@gmail.com\",\r\n//     \"password\": \"teguh12345\"\r\n// }\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"jaenudin@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }\r\n\r\n{\r\n  \"email\": \"yulianti@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -424,7 +454,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_157x}}",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxODgyMTkwLCJpYXQiOjE3OTE3OTU3OTB9.NhmTvmsffq580rZS3qrcNbxWtlb48zD4qJyUOLMY8yg",
                   "type": "string"
                 }
               ]
@@ -542,7 +572,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_001t}}",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyMDM5NTQ2LCJpYXQiOjE3OTE5NTMxNDZ9.9vmui5W93Ij7K9JNxayLEMKPgp0ajeVcPM1d8zuFFgY",
                   "type": "string"
                 }
               ]
@@ -551,7 +581,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n// {\r\n//   \"role_id\": 3,\r\n//   \"work_schedule_id\": 2,\r\n//   \"nip\": \"123456789\",\r\n//   \"full_name\": \"Guru Testzz\",\r\n//   \"email\": \"gurzzu.test@gmail.com\",\r\n//   \"password\": \"paszzsword123\",\r\n//   \"phone_number\": \"08123zz456789\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n{\r\n  \"role_id\": 2,\r\n  \"work_schedule_id\": 1,\r\n  \"nip\": \"34534545\",\r\n  \"full_name\": \"Jaka tingkir\",\r\n  \"email\": \"jaka@gmail.com\",\r\n  \"password\": \"jakatingkir\",\r\n  \"phone_number\": \"2423423344\",\r\n  \"is_active\": true\r\n}",
+              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n{\r\n  \"role_id\": 3,\r\n  \"work_schedule_id\": 2,\r\n  \"nip\": \"432432432\",\r\n  \"full_name\": \"Yulianti\",\r\n  \"email\": \"yulianti@gmail.com\",\r\n  \"password\": \"12345678\",\r\n  \"phone_number\": \"23232323232323\",\r\n  \"is_active\": true\r\n}\r\n\r\n// {\r\n//   \"role_id\": 2,\r\n//   \"work_schedule_id\": 1,\r\n//   \"nip\": \"34534545\",\r\n//   \"full_name\": \"Jaka tingkir\",\r\n//   \"email\": \"jaka@gmail.com\",\r\n//   \"password\": \"jakatingkir\",\r\n//   \"phone_number\": \"2423423344\",\r\n//   \"is_active\": true\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -632,7 +662,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0nct}}",
+                  "value": "{{json_web_token_0mgf}}",
                   "type": "string"
                 }
               ]
@@ -666,6 +696,433 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "School Location Module",
+      "item": [
+        {
+          "name": "Create School Location",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxOTE4NjgwLCJpYXQiOjE3OTE4MzIyODB9.Dcd-E7g904GnNigaJ5lhsok_0ak58XPECkKtKB5j0WQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Sekolah Test\",\r\n  \"latitude\": -6.3063,\r\n  \"longitude\": 107.1727,\r\n  \"radius_meters\": 100,\r\n  \"is_active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/school-locations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "school-locations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get School Location",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxOTE4NjgwLCJpYXQiOjE3OTE4MzIyODB9.Dcd-E7g904GnNigaJ5lhsok_0ak58XPECkKtKB5j0WQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/school-locations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "school-locations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get School Location Paging",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxOTE4NjgwLCJpYXQiOjE3OTE4MzIyODB9.Dcd-E7g904GnNigaJ5lhsok_0ak58XPECkKtKB5j0WQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/school-locations/paginated?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "school-locations",
+                "paginated"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "sekolahx",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get School Location With ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxOTE4NjgwLCJpYXQiOjE3OTE4MzIyODB9.Dcd-E7g904GnNigaJ5lhsok_0ak58XPECkKtKB5j0WQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/school-locations/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "school-locations",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update School Location",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxOTE4NjgwLCJpYXQiOjE3OTE4MzIyODB9.Dcd-E7g904GnNigaJ5lhsok_0ak58XPECkKtKB5j0WQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Sekolah Utama Updated\",\r\n  \"latitude\": -6.3065,\r\n  \"longitude\": 107.1729,\r\n  \"radius_meters\": 150,\r\n  \"is_active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/school-locations/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "school-locations",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete School Location",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxOTE4NjgwLCJpYXQiOjE3OTE4MzIyODB9.Dcd-E7g904GnNigaJ5lhsok_0ak58XPECkKtKB5j0WQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/school-locations/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "school-locations",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Attendance Module",
+      "item": [
+        {
+          "name": "Check In",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"check_in_date\": \"2026-10-14\",\r\n  \"check_in_time\": \"14:08:00\",\r\n  \"check_in_photo\": \"https://example.com/check-in.jpg\",\r\n  \"check_in_lat\": -6.3,\r\n  \"check_in_lng\": 107.3\r\n}\r\n\r\n//toleransi 2 menit check_in_time\r\n//antara jam request dari fe dibandingkan dengan jam server be\r\n//mencegah manipulasi jam absen",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/check-in",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "check-in"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Out",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"check_out_date\": \"2026-10-14\",\r\n  \"check_out_time\": \"14:11:00\",\r\n  \"check_out_photo\": \"https://example.com/check-out.jpg\",\r\n  \"check_out_lat\": -6.3,\r\n  \"check_out_lng\": 107.3,\r\n  \"out_of_area_note\": \"Check-out dilakukan di luar area sekolah karena ada kegiatan di luar.\"\r\n}\r\n\r\n\r\n//cekout berati mengunci data daily acitivity",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/3/check-out",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "3",
+                "check-out"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Daily Activities Module",
+      "item": [
+        {
+          "name": "Create Daily Activity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Mengajar Matimatika dan bahasa indoneisa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/attendances/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "attendances",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Daily Activity With ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/attendances/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "attendances",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Daily Activity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Mengajar Matimatika dan bahasa indoneisa update\"\r\n}\r\n\r\n// selama belum absen pulang masih bisa update",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/attendances/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "attendances",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "auth": {
@@ -685,6 +1142,10 @@
     },
     {
       "key": "json_web_token_0nct",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0mgf",
       "secret": true
     }
   ]
