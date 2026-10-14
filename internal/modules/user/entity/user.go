@@ -5,6 +5,7 @@ import "time"
 type User struct {
 	ID             int64   `gorm:"column:id;primaryKey"`
 	RoleID         int     `gorm:"column:role_id;not null"`
+	Role           *string `gorm:"-" json:"-"`
 	WorkScheduleID *int    `gorm:"column:work_schedule_id"`
 	NIP            *string `gorm:"column:nip;type:varchar(30)"`
 	FullName       string  `gorm:"column:full_name;type:varchar(150);not null"`

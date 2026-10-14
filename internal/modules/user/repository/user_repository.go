@@ -93,18 +93,33 @@ func (r *userRepository) FindByID(id int64) (*entity.User, error) {
 	return &user, nil
 }
 
+type userWithRole struct {
+	entity.User
+	RoleName *string `gorm:"column:role_name"`
+}
+
 func (r *userRepository) FindByEmail(email string) (*entity.User, error) {
-	var user entity.User
+	var result userWithRole
 
 	err := r.db.
-		Where("email = ? AND is_deleted = ?", email, false).
-		First(&user).Error
+		Table("users").
+		Select("users.*, roles.name AS role_name").
+		Joins("JOIN roles ON roles.id = users.role_id").
+		Where(
+			"users.email = ? AND users.is_deleted = ? AND roles.is_deleted = ?",
+			email,
+			false,
+			false,
+		).
+		First(&result).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	result.User.Role = result.RoleName
+
+	return &result.User, nil
 }
 
 func (r *userRepository) FindByNIP(nip string) (*entity.User, error) {

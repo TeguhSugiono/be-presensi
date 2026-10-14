@@ -15,6 +15,7 @@ type LoginResponse struct {
 type UserResponse struct {
 	ID             int64   `json:"id"`
 	RoleID         int     `json:"role_id"`
+	Role           string  `json:"role"`
 	WorkScheduleID *int    `json:"work_schedule_id"`
 	NIP            *string `json:"nip"`
 	FullName       string  `json:"full_name"`

@@ -25,6 +25,22 @@ import (
 	authRoutes "be-presensi/internal/modules/auth/routes"
 	authService "be-presensi/internal/modules/auth/service"
 
+	schoolLocationHandler "be-presensi/internal/modules/school_location/handler"
+	schoolLocationRepository "be-presensi/internal/modules/school_location/repository"
+	schoolLocationRoutes "be-presensi/internal/modules/school_location/routes"
+	schoolLocationService "be-presensi/internal/modules/school_location/service"
+
+	attendanceHandler "be-presensi/internal/modules/attendance/handler"
+	attendanceRepository "be-presensi/internal/modules/attendance/repository"
+	attendanceRoutes "be-presensi/internal/modules/attendance/routes"
+	attendanceService "be-presensi/internal/modules/attendance/service"
+
+	dailyActivityRepository "be-presensi/internal/modules/daily_activity/repository"
+
+	dailyActivityHandler "be-presensi/internal/modules/daily_activity/handler"
+	dailyActivityRoutes "be-presensi/internal/modules/daily_activity/routes"
+	dailyActivityService "be-presensi/internal/modules/daily_activity/service"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -52,6 +68,7 @@ func main() {
 	roleHdl := roleHandler.NewRoleHandler(roleSvc)
 
 	roleRoutes.RegisterRoleRoutes(api, roleHdl)
+	//roleRoutes.RegisterRoleRoutes(api, roleHdl, db)
 
 	// =========================
 	// Work Schedule Module
@@ -63,9 +80,58 @@ func main() {
 	workScheduleRoutes.RegisterWorkScheduleRoutes(api, workScheduleHdl)
 
 	// =========================
+	// School Location Module
+	// =========================
+	schoolLocationRepo := schoolLocationRepository.NewSchoolLocationRepository(db)
+	schoolLocationSvc := schoolLocationService.NewSchoolLocationService(schoolLocationRepo)
+	schoolLocationHdl := schoolLocationHandler.NewSchoolLocationHandler(schoolLocationSvc)
+
+	schoolLocationRoutes.RegisterSchoolLocationRoutes(api, schoolLocationHdl)
+
+	// =========================
 	// User Module
 	// =========================
 	userRepo := userRepository.NewUserRepository(db)
+
+	// =========================
+	// Attendance Module
+	// =========================
+	attendanceRepo := attendanceRepository.NewAttendanceRepository(db)
+
+	dailyActivityRepo := dailyActivityRepository.NewDailyActivityRepository(db)
+
+	attendanceSvc := attendanceService.NewAttendanceService(
+		db,
+		attendanceRepo,
+		dailyActivityRepo,
+		userRepo,
+		roleRepo,
+		workScheduleRepo,
+		schoolLocationRepo,
+	)
+
+	attendanceHdl := attendanceHandler.NewAttendanceHandler(attendanceSvc)
+
+	attendanceRoutes.RegisterAttendanceRoutes(router, attendanceHdl)
+
+	// =========================
+	// Daily Activity Module
+	// =========================
+	dailyActivitySvc := dailyActivityService.NewDailyActivityService(
+		db,
+		attendanceRepo,
+		dailyActivityRepo,
+	)
+
+	dailyActivityHdl := dailyActivityHandler.NewDailyActivityHandler(
+		dailyActivitySvc,
+	)
+
+	dailyActivityRoutes.RegisterDailyActivityRoutes(
+		router,
+		dailyActivityHdl,
+	)
+
 	userSvc := userService.NewUserService(userRepo, db)
 	userHdl := userHandler.NewUserHandler(userSvc)
 

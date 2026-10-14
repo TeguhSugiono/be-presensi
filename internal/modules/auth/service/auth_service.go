@@ -96,6 +96,11 @@ func (s *authService) Login(
 		return nil, err
 	}
 
+	role := ""
+	if user.Role != nil {
+		role = *user.Role
+	}
+
 	return &dto.LoginResponse{
 		AccessToken: accessToken,
 		TokenType:   "Bearer",
@@ -103,6 +108,7 @@ func (s *authService) Login(
 		User: dto.UserResponse{
 			ID:             user.ID,
 			RoleID:         user.RoleID,
+			Role:           role,
 			WorkScheduleID: user.WorkScheduleID,
 			NIP:            user.NIP,
 			FullName:       user.FullName,
