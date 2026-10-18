@@ -33,6 +33,8 @@ var (
 	ErrSchoolLocationUnavailable   = errors.New("no active school location is available")
 	ErrOutOfAreaNoteRequired       = errors.New("out-of-area note is required")
 	ErrInvalidCoordinates          = errors.New("invalid GPS coordinates")
+	ErrDailyActivityNotSubmitted   = errors.New("daily activity must be submitted before check-out")
+	ErrAttendancePhotoNotFound     = errors.New("attendance photo not found")
 )
 
 type AttendanceService struct {
@@ -63,6 +65,113 @@ func NewAttendanceService(
 		workScheduleRepo:   workScheduleRepo,
 		schoolLocationRepo: schoolLocationRepo,
 	}
+}
+
+func (s *AttendanceService) FindAllPaginated(
+	ctx context.Context,
+	search string,
+	page int,
+	perPage int,
+) ([]*attendanceEntity.Attendance, int64, error) {
+	if page < 1 {
+		page = 1
+	}
+
+	if perPage < 1 {
+		perPage = 10
+	}
+
+	if perPage > 100 {
+		perPage = 100
+	}
+
+	offset := (page - 1) * perPage
+
+	return s.attendanceRepo.FindAllPaginated(
+		ctx,
+		strings.TrimSpace(search),
+		perPage,
+		offset,
+	)
+}
+
+// GetAttendancePhoto returns a private attendance photo path.
+// Only the attendance owner or an Admin can access it.
+func (s *AttendanceService) GetAttendancePhoto(
+	ctx context.Context,
+	userID int64,
+	attendanceID int64,
+	photoType string,
+) (string, error) {
+	if userID <= 0 || attendanceID <= 0 {
+		return "", ErrAttendanceNotFound
+	}
+
+	if photoType != "check-in" && photoType != "check-out" {
+		return "", ErrAttendancePhotoNotFound
+	}
+
+	// Validate the authenticated user.
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", ErrAttendanceUserNotFound
+		}
+		return "", err
+	}
+
+	if user == nil || !user.IsActive || user.IsDeleted {
+		return "", ErrAttendanceUserNotFound
+	}
+
+	// Load attendance.
+	attendance, err := s.attendanceRepo.FindByID(ctx, attendanceID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", ErrAttendanceNotFound
+		}
+		return "", err
+	}
+
+	if attendance == nil || attendance.IsDeleted {
+		return "", ErrAttendanceNotFound
+	}
+
+	// Determine whether the authenticated user is an Admin.
+	isAdmin := false
+
+	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", err
+		}
+	} else if role != nil && !role.IsDeleted &&
+		strings.EqualFold(strings.TrimSpace(role.Name), "Admin") {
+		isAdmin = true
+	}
+
+	// Hide attendance existence from unauthorized users.
+	if attendance.UserID != userID && !isAdmin {
+		return "", ErrAttendanceNotFound
+	}
+
+	// Return only the requested photo path.
+	var photoPath string
+
+	switch photoType {
+	case "check-in":
+		photoPath = attendance.CheckInPhoto
+	case "check-out":
+		if attendance.CheckOutPhoto != nil {
+			photoPath = *attendance.CheckOutPhoto
+		}
+	}
+
+	if strings.TrimSpace(photoPath) == "" {
+		return "", ErrAttendancePhotoNotFound
+	}
+
+	return photoPath, nil
 }
 
 // CheckIn records attendance using the authenticated user's ID.
@@ -319,8 +428,9 @@ func (s *AttendanceService) CheckOut(
 		if activity == nil {
 			return ErrDailyActivityRequired
 		}
-		if activity.IsLocked {
-			return ErrDailyActivityLocked
+		if strings.TrimSpace(activity.Description) == "" ||
+			(activity.Status != 2 && activity.Status != 3) {
+			return ErrDailyActivityNotSubmitted
 		}
 
 		outOfArea, err := s.isOutsideActiveSchoolLocations(
@@ -358,12 +468,6 @@ func (s *AttendanceService) CheckOut(
 		attendance.UpdatedAt = &updatedAt
 
 		if err := txAttendanceRepo.Update(ctx, attendance); err != nil {
-			return err
-		}
-
-		activity.UpdatedBy = &updatedBy
-		activity.UpdatedAt = &updatedAt
-		if err := txDailyActivityRepo.Lock(ctx, activity); err != nil {
 			return err
 		}
 

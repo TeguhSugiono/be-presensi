@@ -390,9 +390,15 @@ func (s *userService) validateWorkSchedule(scheduleID *int) error {
 }
 
 func toUserResponse(user *entity.User) dto.UserResponse {
+	role := ""
+	if user.Role != nil {
+		role = *user.Role
+	}
+
 	return dto.UserResponse{
 		ID:             user.ID,
 		RoleID:         user.RoleID,
+		Role:           role,
 		WorkScheduleID: user.WorkScheduleID,
 		NIP:            user.NIP,
 		FullName:       user.FullName,

@@ -14,12 +14,18 @@ type UpdateDailyActivityRequest struct {
 	Description string `json:"description" binding:"required"`
 }
 
+type UpsertDailyActivityRequest struct {
+	Description string `json:"description"`
+	Action      string `json:"action" binding:"required,oneof=draft submit"`
+}
+
 type DailyActivityResponse struct {
 	ID           int64   `json:"id"`
 	AttendanceID int64   `json:"attendance_id"`
 	UserID       int64   `json:"user_id"`
 	ActivityDate string  `json:"activity_date"`
 	Description  string  `json:"description"`
+	Status       int16   `json:"status"`
 	IsLocked     bool    `json:"is_locked"`
 	CreatedAt    string  `json:"created_at"`
 	UpdatedAt    *string `json:"updated_at"`
@@ -43,6 +49,7 @@ func ToDailyActivityResponse(
 		UserID:       activity.UserID,
 		ActivityDate: activity.ActivityDate.In(loc).Format("2006-01-02"),
 		Description:  activity.Description,
+		Status:       activity.Status,
 		IsLocked:     activity.IsLocked,
 		CreatedAt:    activity.CreatedAt.In(loc).Format("2006-01-02 15:04:05"),
 	}

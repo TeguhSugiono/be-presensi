@@ -112,7 +112,12 @@ func main() {
 
 	attendanceHdl := attendanceHandler.NewAttendanceHandler(attendanceSvc)
 
-	attendanceRoutes.RegisterAttendanceRoutes(router, attendanceHdl)
+	attendanceRoutes.RegisterAttendanceRoutes(
+		router,
+		attendanceHdl,
+		userRepo,
+		roleRepo,
+	)
 
 	// =========================
 	// Daily Activity Module
@@ -130,6 +135,8 @@ func main() {
 	dailyActivityRoutes.RegisterDailyActivityRoutes(
 		router,
 		dailyActivityHdl,
+		userRepo,
+		roleRepo,
 	)
 
 	userSvc := userService.NewUserService(userRepo, db)
@@ -139,7 +146,14 @@ func main() {
 	// Auth Module
 	// =========================
 	//authSvc := authService.NewAuthService(userRepo)
-	authSvc := authService.NewAuthService(userRepo, db)
+	// authSvc := authService.NewAuthService(userRepo, db)
+
+	authSvc := authService.NewAuthService(
+		userRepo,
+		roleRepo,
+		db,
+	)
+
 	authHdl := authHandler.NewAuthHandler(authSvc)
 
 	authRoutes.RegisterAuthRoutes(api, authHdl)

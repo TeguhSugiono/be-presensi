@@ -24,6 +24,7 @@ type Attendance struct {
 	UpdatedBy          *int64     `gorm:"column:updated_by"`
 	UpdatedAt          *time.Time `gorm:"column:updated_at;autoUpdateTime:false"`
 	IsDeleted          bool       `gorm:"column:is_deleted;not null;default:false"`
+	UserName           string     `gorm:"column:user_name;->" json:"-"`
 }
 
 func (Attendance) TableName() string {

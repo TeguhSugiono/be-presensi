@@ -216,3 +216,177 @@ func (s *DailyActivityService) Update(
 
 	return result, nil
 }
+
+func (s *DailyActivityService) GetByDate(
+	ctx context.Context,
+	userID int64,
+	activityDate time.Time,
+) (*entity.DailyActivity, error) {
+	activity, err := s.activityRepo.FindByUserAndDate(
+		ctx,
+		userID,
+		activityDate,
+	)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrActivityNotFound
+		}
+		return nil, err
+	}
+
+	return activity, nil
+}
+
+const (
+	DailyActivityStatusDraft     int16 = 1
+	DailyActivityStatusSubmitted int16 = 2
+	DailyActivityStatusApproved  int16 = 3
+)
+
+func (s *DailyActivityService) Upsert(
+	ctx context.Context,
+	userID int64,
+	attendanceID int64,
+	req dto.UpsertDailyActivityRequest,
+) (*entity.DailyActivity, error) {
+	action := strings.TrimSpace(req.Action)
+	description := strings.TrimSpace(req.Description)
+
+	if action != "draft" && action != "submit" {
+		return nil, errors.New("invalid daily activity action")
+	}
+
+	// Laporan yang dikirim harus memiliki deskripsi.
+	if action == "submit" && description == "" {
+		return nil, ErrDescriptionRequired
+	}
+
+	var result *entity.DailyActivity
+
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		attendanceRepo := s.attendanceRepo.WithTx(tx)
+		activityRepo := s.activityRepo.WithTx(tx)
+
+		attendance, err := attendanceRepo.FindByIDForUpdate(
+			ctx,
+			attendanceID,
+		)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrAttendanceNotFound
+			}
+			return err
+		}
+
+		if attendance.UserID != userID {
+			return ErrAttendanceNotFound
+		}
+
+		if attendance.CheckOutTime != nil {
+			return ErrAttendanceAlreadyChecked
+		}
+
+		activity, err := activityRepo.FindByAttendanceIDForUpdate(
+			ctx,
+			attendanceID,
+			userID,
+		)
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			now := time.Now()
+
+			status := DailyActivityStatusDraft
+			isLocked := false
+
+			if action == "submit" {
+				status = DailyActivityStatusSubmitted
+				isLocked = true
+			}
+
+			activity = &entity.DailyActivity{
+				AttendanceID: attendanceID,
+				UserID:       userID,
+				ActivityDate: attendance.AttendanceDate,
+				Description:  description,
+				Status:       status,
+				IsLocked:     isLocked,
+				CreatedBy:    &userID,
+				CreatedAt:    now,
+				IsDeleted:    false,
+			}
+
+			if err := activityRepo.Create(ctx, activity); err != nil {
+				return err
+			}
+
+			result = activity
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		// Laporan yang sudah disubmit atau approved tidak dapat
+		// diedit maupun disubmit ulang oleh guru.
+		if activity.Status != DailyActivityStatusDraft ||
+			activity.IsLocked {
+			return ErrActivityLocked
+		}
+
+		now := time.Now()
+
+		activity.Description = description
+		activity.UpdatedBy = &userID
+		activity.UpdatedAt = &now
+
+		if action == "submit" {
+			activity.Status = DailyActivityStatusSubmitted
+			activity.IsLocked = true
+		}
+
+		if err := activityRepo.Update(ctx, activity); err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrActivityLocked
+			}
+
+			return err
+		}
+
+		result = activity
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s *DailyActivityService) FindAllPaginated(
+	search string,
+	page int,
+	perPage int,
+) ([]*entity.DailyActivity, int64, error) {
+	if page < 1 {
+		page = 1
+	}
+
+	if perPage < 1 {
+		perPage = 10
+	}
+
+	if perPage > 100 {
+		perPage = 100
+	}
+
+	offset := (page - 1) * perPage
+
+	return s.activityRepo.FindAllPaginated(
+		context.Background(),
+		strings.TrimSpace(search),
+		perPage,
+		offset,
+	)
+}

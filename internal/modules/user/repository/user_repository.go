@@ -50,12 +50,12 @@ func (r *userRepository) FindAllPaginated(
 	var total int64
 
 	query := r.db.Model(&entity.User{}).
-		Where("is_deleted = ?", false)
+		Where("users.is_deleted = ?", false)
 
 	if search != "" {
 		keyword := "%" + search + "%"
 		query = query.Where(
-			"full_name ILIKE ? OR email ILIKE ? OR nip ILIKE ?",
+			"users.full_name ILIKE ? OR users.email ILIKE ? OR users.nip ILIKE ?",
 			keyword,
 			keyword,
 			keyword,
@@ -66,14 +66,32 @@ func (r *userRepository) FindAllPaginated(
 		return nil, 0, err
 	}
 
+	type userWithRole struct {
+		entity.User
+		RoleName *string `gorm:"column:role_name"`
+	}
+
+	var rows []userWithRole
+
 	err := query.
-		Order("id ASC").
+		Select("users.*, roles.name AS role_name").
+		Joins(
+			"LEFT JOIN roles ON roles.id = users.role_id AND roles.is_deleted = ?",
+			false,
+		).
+		Order("users.id ASC").
 		Limit(limit).
 		Offset(offset).
-		Find(&users).Error
+		Scan(&rows).Error
 
 	if err != nil {
 		return nil, 0, err
+	}
+
+	for i := range rows {
+		user := rows[i].User
+		user.Role = rows[i].RoleName
+		users = append(users, &user)
 	}
 
 	return users, total, nil

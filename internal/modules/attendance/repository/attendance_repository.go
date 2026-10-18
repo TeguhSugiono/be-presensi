@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"be-presensi/internal/modules/attendance/entity"
@@ -19,7 +20,11 @@ type AttendanceRepository interface {
 	Create(ctx context.Context, attendance *entity.Attendance) error
 	Update(ctx context.Context, attendance *entity.Attendance) error
 	Delete(ctx context.Context, attendance *entity.Attendance) error
-	FindAllPaginated(ctx context.Context, search string, limit, offset int) ([]entity.Attendance, int64, error)
+	FindAllPaginated(
+		ctx context.Context,
+		search string,
+		limit, offset int,
+	) ([]*entity.Attendance, int64, error)
 
 	FindByIDForUpdate(
 		ctx context.Context,
@@ -120,18 +125,28 @@ func (r *attendanceRepository) FindAllPaginated(
 	ctx context.Context,
 	search string,
 	limit, offset int,
-) ([]entity.Attendance, int64, error) {
-	var attendances []entity.Attendance
+) ([]*entity.Attendance, int64, error) {
+	var attendances []*entity.Attendance
 	var total int64
 
 	query := r.db.WithContext(ctx).
 		Model(&entity.Attendance{}).
-		Where("is_deleted = ?", false)
+		Joins("LEFT JOIN users ON users.id = attendances.user_id").
+		Where("attendances.is_deleted = ?", false).
+		Where("users.is_deleted = ?", false)
 
 	if search != "" {
+		keyword := "%" + strings.TrimSpace(search) + "%"
+
 		query = query.Where(
-			"CAST(user_id AS TEXT) ILIKE ?",
-			"%"+search+"%",
+			`(
+				users.full_name ILIKE ?
+				OR CAST(attendances.user_id AS TEXT) ILIKE ?
+				OR CAST(attendances.attendance_date AS TEXT) ILIKE ?
+			)`,
+			keyword,
+			keyword,
+			keyword,
 		)
 	}
 
@@ -140,7 +155,8 @@ func (r *attendanceRepository) FindAllPaginated(
 	}
 
 	err := query.
-		Order("attendance_date DESC, id DESC").
+		Select("attendances.*, users.full_name AS user_name").
+		Order("attendances.attendance_date DESC, attendances.id DESC").
 		Limit(limit).
 		Offset(offset).
 		Find(&attendances).Error

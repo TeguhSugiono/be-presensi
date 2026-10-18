@@ -1,15 +1,20 @@
 package middleware
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
+	roleRepository "be-presensi/internal/modules/role/repository"
+	userRepository "be-presensi/internal/modules/user/repository"
+
 	"be-presensi/internal/modules/auth/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -123,4 +128,72 @@ func GetUserID(c *gin.Context) (int64, bool) {
 	}
 
 	return 0, false
+}
+
+func AdminMiddleware(
+	userRepo userRepository.UserRepository,
+	roleRepo roleRepository.RoleRepository,
+) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userID, ok := GetUserID(c)
+		if !ok || userID <= 0 {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "invalid authenticated user",
+			})
+			return
+		}
+
+		user, err := userRepo.FindByID(userID)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+					"success": false,
+					"message": "user not found",
+				})
+				return
+			}
+
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"message": "failed to verify user access",
+			})
+			return
+		}
+
+		if user == nil || !user.IsActive || user.IsDeleted {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"success": false,
+				"message": "active user account required",
+			})
+			return
+		}
+
+		role, err := roleRepo.FindByID(c.Request.Context(), user.RoleID)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+					"success": false,
+					"message": "admin access required",
+				})
+				return
+			}
+
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"message": "failed to verify user role",
+			})
+			return
+		}
+
+		if role == nil || role.IsDeleted || !strings.EqualFold(role.Name, "Admin") {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"success": false,
+				"message": "admin access required",
+			})
+			return
+		}
+
+		c.Next()
+	}
 }

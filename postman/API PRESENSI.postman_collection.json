@@ -423,7 +423,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"email\": \"teguh@gmail.com\",\r\n//     \"password\": \"teguh12345\"\r\n// }\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"jaenudin@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }\r\n\r\n{\r\n  \"email\": \"yulianti@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}",
+              "raw": "// {\r\n//     \"email\": \"teguh@gmail.com\",\r\n//     \"password\": \"teguh12345\"\r\n// }\r\n\r\n\r\n// {\r\n//     \"email\": \"wiro@gmail.com\",\r\n//     \"password\": \"987654321\"\r\n// }\r\n\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n{\r\n  \"email\": \"jaenudin@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n\r\n// {\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -505,7 +505,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxNjY4ODM3LCJpYXQiOjE3OTE1ODI0Mzd9.g2ulWj10XMP2aZFybioOzYtwyd0Cp2VAE7rEEBmg1-A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyMjk4ODI2LCJpYXQiOjE3OTIyMTI0MjZ9.mplwGZVivqOLRdo3RZtaD2FKBXBLQ1vduur2fIUYtrA",
                   "type": "string"
                 }
               ]
@@ -572,7 +572,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyMDM5NTQ2LCJpYXQiOjE3OTE5NTMxNDZ9.9vmui5W93Ij7K9JNxayLEMKPgp0ajeVcPM1d8zuFFgY",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyNDEzMzU4LCJpYXQiOjE3OTIzMjY5NTh9.MSql0_z5yseB8R2MP7AY5xxAFmK4U3hss9CPv25cXsw",
                   "type": "string"
                 }
               ]
@@ -581,7 +581,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n{\r\n  \"role_id\": 3,\r\n  \"work_schedule_id\": 2,\r\n  \"nip\": \"432432432\",\r\n  \"full_name\": \"Yulianti\",\r\n  \"email\": \"yulianti@gmail.com\",\r\n  \"password\": \"12345678\",\r\n  \"phone_number\": \"23232323232323\",\r\n  \"is_active\": true\r\n}\r\n\r\n// {\r\n//   \"role_id\": 2,\r\n//   \"work_schedule_id\": 1,\r\n//   \"nip\": \"34534545\",\r\n//   \"full_name\": \"Jaka tingkir\",\r\n//   \"email\": \"jaka@gmail.com\",\r\n//   \"password\": \"jakatingkir\",\r\n//   \"phone_number\": \"2423423344\",\r\n//   \"is_active\": true\r\n// }",
+              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n// {\r\n//   \"role_id\": 3,\r\n//   \"work_schedule_id\": 2,\r\n//   \"nip\": \"432432432\",\r\n//   \"full_name\": \"Yulianti\",\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\",\r\n//   \"phone_number\": \"23232323232323\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n// {\r\n//   \"role_id\": 2,\r\n//   \"work_schedule_id\": 1,\r\n//   \"nip\": \"34534545\",\r\n//   \"full_name\": \"Jaka tingkir\",\r\n//   \"email\": \"jaka@gmail.com\",\r\n//   \"password\": \"jakatingkir\",\r\n//   \"phone_number\": \"2423423344\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n\r\n{\r\n  \"role_id\": 3,\r\n  \"work_schedule_id\": 2,\r\n  \"nip\": \"67666666\",\r\n  \"full_name\": \"Wiro Sableng\",\r\n  \"email\": \"wiro@gmail.com\",\r\n  \"password\": \"987654321\",\r\n  \"phone_number\": \"1133557799\",\r\n  \"is_active\": true\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -930,7 +930,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
                   "type": "string"
                 }
               ]
@@ -938,13 +938,36 @@
             "method": "POST",
             "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"check_in_date\": \"2026-10-14\",\r\n  \"check_in_time\": \"14:08:00\",\r\n  \"check_in_photo\": \"https://example.com/check-in.jpg\",\r\n  \"check_in_lat\": -6.3,\r\n  \"check_in_lng\": 107.3\r\n}\r\n\r\n//toleransi 2 menit check_in_time\r\n//antara jam request dari fe dibandingkan dengan jam server be\r\n//mencegah manipulasi jam absen",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "check_in_date",
+                  "value": "2026-10-18",
+                  "type": "text"
+                },
+                {
+                  "key": "check_in_time",
+                  "value": "19:45:00",
+                  "type": "text"
+                },
+                {
+                  "key": "check_in_photo",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/teguh/Pictures/aaaa/hpgruesen-tank-truck-1388933_1920.jpg"
+                  ]
+                },
+                {
+                  "key": "check_in_lat",
+                  "value": "-6.3",
+                  "type": "text"
+                },
+                {
+                  "key": "check_in_lng",
+                  "value": "107.3",
+                  "type": "text"
                 }
-              }
+              ]
             },
             "url": {
               "raw": "http://localhost:8080/api/attendances/check-in",
@@ -963,14 +986,14 @@
           "response": []
         },
         {
-          "name": "Check Out",
+          "name": "Check out",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
                   "type": "string"
                 }
               ]
@@ -978,16 +1001,44 @@
             "method": "POST",
             "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"check_out_date\": \"2026-10-14\",\r\n  \"check_out_time\": \"14:11:00\",\r\n  \"check_out_photo\": \"https://example.com/check-out.jpg\",\r\n  \"check_out_lat\": -6.3,\r\n  \"check_out_lng\": 107.3,\r\n  \"out_of_area_note\": \"Check-out dilakukan di luar area sekolah karena ada kegiatan di luar.\"\r\n}\r\n\r\n\r\n//cekout berati mengunci data daily acitivity",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "check_out_date",
+                  "value": "2026-10-18",
+                  "type": "text"
+                },
+                {
+                  "key": "check_out_time",
+                  "value": "19:51:00",
+                  "type": "text"
+                },
+                {
+                  "key": "check_out_photo",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/teguh/Pictures/aaaa/rauschenberger-transport-3210728_1920.jpg"
+                  ]
+                },
+                {
+                  "key": "check_out_lat",
+                  "value": "-6.3",
+                  "type": "text"
+                },
+                {
+                  "key": "check_out_lng",
+                  "value": "107.3",
+                  "type": "text"
+                },
+                {
+                  "key": "out_of_area_note",
+                  "value": "Cek Out Diluar Area",
+                  "type": "text"
                 }
-              }
+              ]
             },
             "url": {
-              "raw": "http://localhost:8080/api/attendances/3/check-out",
+              "raw": "http://localhost:8080/api/attendances/7/check-out",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -996,8 +1047,132 @@
               "path": [
                 "api",
                 "attendances",
-                "3",
+                "7",
                 "check-out"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Attendance Paging",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyNDE1NTI2LCJpYXQiOjE3OTIzMjkxMjZ9.CJ02KnZz3OzeMB-poGXYuYXeZsicdtsmaotHxE_cllA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/paginated?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "paginated"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Jaenudin",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Foto Cek In",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJzdWIiOiI5IiwiZXhwIjoxNzkyNDE2OTg4LCJpYXQiOjE3OTIzMzA1ODh9.xSy80IAVCyAn0Dx2H5Rni0CdLnNl7HzzXXV5f5pNpoE\",",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/7/check-in-photo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "7",
+                "check-in-photo"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Jaenudin",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Foto Cek  Out",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTY4NzEsImlhdCI6MTc5MjMzMDQ3MX0.W9MNrBoCMb0SGsnfXIUrN3I5PPxoqcocE6s_ytlzq1k",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/7/check-out-photo",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "7",
+                "check-out-photo"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Jaenudin",
+                  "disabled": true
+                }
               ]
             }
           },
@@ -1016,7 +1191,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIzMDA1NTcsImlhdCI6MTc5MjIxNDE1N30.7ZQv3A3dq7qjrv2gLfUxh9RCKL8uKKgiLn5-FnYa24I",
                   "type": "string"
                 }
               ]
@@ -1025,7 +1200,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"description\": \"Mengajar Matimatika dan bahasa indoneisa\"\r\n}",
+              "raw": "{\r\n  \"description\": \"TEEST 12344\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1033,7 +1208,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/api/daily-activities/attendances/3",
+              "raw": "http://localhost:8080/api/daily-activities/attendances/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1043,7 +1218,49 @@
                 "api",
                 "daily-activities",
                 "attendances",
-                "3"
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Daily Activity InsertUpdate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//   \"description\": \"TEEST DRAFT UPDATE\",\r\n//   \"action\": \"draft\"\r\n// }\r\n\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n{\r\n  \"description\": \"TEST DRAFT TO SUBMIT\",\r\n  \"action\": \"submit\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/attendances/7/upsert",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "attendances",
+                "7",
+                "upsert"
               ]
             }
           },
@@ -1057,7 +1274,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIzMDA1NTcsImlhdCI6MTc5MjIxNDE1N30.7ZQv3A3dq7qjrv2gLfUxh9RCKL8uKKgiLn5-FnYa24I",
                   "type": "string"
                 }
               ]
@@ -1082,6 +1299,89 @@
           "response": []
         },
         {
+          "name": "Get Daily Activity With Date Activity",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJzdWIiOiI5IiwiZXhwIjoxNzkyMzgzNTI1LCJpYXQiOjE3OTIyOTcxMjV9.X7ejWq9-7P_QBdYEQzNRzbI8kA9rVpQxJivmli4pO6Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/by-date?activity_date=2026-10-18",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "by-date"
+              ],
+              "query": [
+                {
+                  "key": "activity_date",
+                  "value": "2026-10-18"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Daily Activity Paging",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyMzk2MTkwLCJpYXQiOjE3OTIzMDk3OTB9.CaYmIgKqwloR7MleJFjwDHDMp44PXV79wm79PIMH1_0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/paginated?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "paginated"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "yuli",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Update Daily Activity",
           "request": {
             "auth": {
@@ -1089,7 +1389,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIwNDgwMzIsImlhdCI6MTc5MTk2MTYzMn0.ZivrIZ2CsszxZe5pnJME4U0Z_EEYo7k9mETSDP-gpes",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwic3ViIjoiMTAiLCJleHAiOjE3OTIzMDA1NTcsImlhdCI6MTc5MjIxNDE1N30.7ZQv3A3dq7qjrv2gLfUxh9RCKL8uKKgiLn5-FnYa24I",
                   "type": "string"
                 }
               ]
@@ -1106,7 +1406,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/api/daily-activities/attendances/2",
+              "raw": "http://localhost:8080/api/daily-activities/attendances/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1116,7 +1416,7 @@
                 "api",
                 "daily-activities",
                 "attendances",
-                "2"
+                "4"
               ]
             }
           },

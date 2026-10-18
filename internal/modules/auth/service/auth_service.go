@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"os"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"be-presensi/internal/modules/auth/dto"
+	roleRepository "be-presensi/internal/modules/role/repository"
 	userEntity "be-presensi/internal/modules/user/entity"
 	userRepository "be-presensi/internal/modules/user/repository"
 
@@ -34,20 +36,25 @@ type AuthService interface {
 
 type authService struct {
 	userRepo userRepository.UserRepository
+	roleRepo roleRepository.RoleRepository
 	db       *gorm.DB
 }
 
 func NewAuthService(
 	userRepo userRepository.UserRepository,
+	roleRepo roleRepository.RoleRepository,
 	db *gorm.DB,
 ) AuthService {
 	return &authService{
 		userRepo: userRepo,
+		roleRepo: roleRepo,
 		db:       db,
 	}
 }
 
-func (s *authService) GetCurrentUser(userID int64) (*dto.UserResponse, error) {
+func (s *authService) GetCurrentUser(
+	userID int64,
+) (*dto.UserResponse, error) {
 	user, err := s.userRepo.FindByID(userID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -57,9 +64,18 @@ func (s *authService) GetCurrentUser(userID int64) (*dto.UserResponse, error) {
 		return nil, err
 	}
 
+	role, err := s.roleRepo.FindByID(
+		context.Background(),
+		user.RoleID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	return &dto.UserResponse{
 		ID:             user.ID,
 		RoleID:         user.RoleID,
+		Role:           role.Name,
 		WorkScheduleID: user.WorkScheduleID,
 		NIP:            user.NIP,
 		FullName:       user.FullName,
