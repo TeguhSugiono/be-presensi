@@ -32,13 +32,16 @@ func ToAttendanceResponse(
 		CheckInPhoto:   attendance.CheckInPhoto,
 		CheckInLat:     attendance.CheckInLat,
 		CheckInLng:     attendance.CheckInLng,
-		IsLate:         attendance.IsLate,
-		CheckOutPhoto:  attendance.CheckOutPhoto,
-		CheckOutLat:    attendance.CheckOutLat,
-		CheckOutLng:    attendance.CheckOutLng,
-		IsOutOfArea:    attendance.IsOutOfArea,
-		OutOfAreaNote:  attendance.OutOfAreaNote,
-		CreatedAt:      attendance.CreatedAt.In(loc).Format(dateTimeFormat),
+		KeteranganIn:   attendance.KeteranganIn,
+
+		IsLate:        attendance.IsLate,
+		CheckOutPhoto: attendance.CheckOutPhoto,
+		CheckOutLat:   attendance.CheckOutLat,
+		CheckOutLng:   attendance.CheckOutLng,
+		KeteranganOut: attendance.KeteranganOut,
+		IsOutOfArea:   attendance.IsOutOfArea,
+		OutOfAreaNote: attendance.OutOfAreaNote,
+		CreatedAt:     attendance.CreatedAt.In(loc).Format(dateTimeFormat),
 	}
 
 	if attendance.ScheduledStartTime != nil {

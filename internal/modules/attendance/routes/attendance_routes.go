@@ -20,17 +20,24 @@ func RegisterAttendanceRoutes(
 
 	{
 		attendance.POST("/check-in", attendanceHandler.CheckIn)
-		attendance.POST("/:id/check-out", attendanceHandler.CheckOut)
+		// attendance.POST("/:id/check-out", attendanceHandler.CheckOut)
+
+		attendance.POST("/check-out", attendanceHandler.CheckOut)
 
 		attendance.GET("/:id/check-in-photo", attendanceHandler.CheckInPhoto)
 		attendance.GET("/:id/check-out-photo", attendanceHandler.CheckOutPhoto)
 
 		// Admin-only attendance endpoints
-		attendance.GET(
-			"/paginated",
-			middleware.AdminMiddleware(userRepo, roleRepo),
-			attendanceHandler.FindAllPaginated,
-		)
+		// attendance.GET(
+		// 	"/paginated",
+		// 	middleware.AdminMiddleware(userRepo, roleRepo),
+		// 	attendanceHandler.FindAllPaginated,
+		// )
+
+		attendance.GET("/paginated", attendanceHandler.FindAllPaginated)
+
+		attendance.GET("/:id/check-in-detail", attendanceHandler.CheckInDetail)
+		attendance.GET("/:id/check-out-detail", attendanceHandler.CheckOutDetail)
 
 	}
 }

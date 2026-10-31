@@ -15,8 +15,9 @@ type UpdateDailyActivityRequest struct {
 }
 
 type UpsertDailyActivityRequest struct {
-	Description string `json:"description"`
-	Action      string `json:"action" binding:"required,oneof=draft submit"`
+	ActivityDate string `json:"activity_date"`
+	Description  string `json:"description"`
+	Action       string `json:"action" binding:"required,oneof=draft submit"`
 }
 
 type DailyActivityResponse struct {

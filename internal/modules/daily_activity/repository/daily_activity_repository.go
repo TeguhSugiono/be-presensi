@@ -1,80 +1,3 @@
-// package repository
-
-// import (
-// 	"context"
-
-// 	"be-presensi/internal/modules/daily_activity/entity"
-
-// 	"gorm.io/gorm"
-// 	"gorm.io/gorm/clause"
-// )
-
-// type DailyActivityRepository interface {
-// 	WithTx(tx *gorm.DB) DailyActivityRepository
-// 	FindByAttendanceIDForUpdate(
-// 		ctx context.Context,
-// 		attendanceID int64,
-// 		userID int64,
-// 	) (*entity.DailyActivity, error)
-// 	Lock(
-// 		ctx context.Context,
-// 		activity *entity.DailyActivity,
-// 	) error
-// }
-
-// type dailyActivityRepository struct {
-// 	db *gorm.DB
-// }
-
-// func NewDailyActivityRepository(
-// 	db *gorm.DB,
-// ) DailyActivityRepository {
-// 	return &dailyActivityRepository{db: db}
-// }
-
-// func (r *dailyActivityRepository) WithTx(
-// 	tx *gorm.DB,
-// ) DailyActivityRepository {
-// 	return &dailyActivityRepository{db: tx}
-// }
-
-// func (r *dailyActivityRepository) FindByAttendanceIDForUpdate(
-// 	ctx context.Context,
-// 	attendanceID int64,
-// 	userID int64,
-// ) (*entity.DailyActivity, error) {
-// 	var activity entity.DailyActivity
-
-// 	err := r.db.WithContext(ctx).
-// 		Clauses(clause.Locking{Strength: "UPDATE"}).
-// 		Where(
-// 			"attendance_id = ? AND user_id = ? AND is_deleted = ?",
-// 			attendanceID,
-// 			userID,
-// 			false,
-// 		).
-// 		First(&activity).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &activity, nil
-// }
-
-// func (r *dailyActivityRepository) Lock(
-// 	ctx context.Context,
-// 	activity *entity.DailyActivity,
-// ) error {
-// 	return r.db.WithContext(ctx).
-// 		Model(&entity.DailyActivity{}).
-// 		Where("id = ? AND is_deleted = ?", activity.ID, false).
-// 		Updates(map[string]interface{}{
-// 			"is_locked":  true,
-// 			"updated_by": activity.UpdatedBy,
-// 			"updated_at": activity.UpdatedAt,
-// 		}).Error
-// }
-
 package repository
 
 import (
@@ -127,6 +50,12 @@ type DailyActivityRepository interface {
 		limit int,
 		offset int,
 	) ([]*entity.DailyActivity, int64, error)
+
+	FindByUserAndDateForUpdate(
+		ctx context.Context,
+		userID int64,
+		activityDate time.Time,
+	) (*entity.DailyActivity, error)
 }
 
 type dailyActivityRepository struct {
@@ -322,4 +251,28 @@ func (r *dailyActivityRepository) FindAllPaginated(
 	}
 
 	return activities, total, nil
+}
+
+func (r *dailyActivityRepository) FindByUserAndDateForUpdate(
+	ctx context.Context,
+	userID int64,
+	activityDate time.Time,
+) (*entity.DailyActivity, error) {
+	var activity entity.DailyActivity
+
+	err := r.db.WithContext(ctx).
+		Clauses(clause.Locking{Strength: "UPDATE"}).
+		Where(
+			"user_id = ? AND activity_date = ? AND is_deleted = ?",
+			userID,
+			activityDate.Format("2006-01-02"),
+			false,
+		).
+		First(&activity).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &activity, nil
 }

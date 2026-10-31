@@ -21,6 +21,7 @@ var (
 	ErrActivityNotFound         = errors.New("daily activity not found")
 	ErrActivityLocked           = errors.New("daily activity is already locked")
 	ErrDescriptionRequired      = errors.New("description is required")
+	ErrCheckInRequired          = errors.New("please check in before creating daily activity")
 )
 
 type DailyActivityService struct {
@@ -244,6 +245,152 @@ const (
 )
 
 func (s *DailyActivityService) Upsert(
+	ctx context.Context,
+	userID int64,
+	req dto.UpsertDailyActivityRequest,
+) (*entity.DailyActivity, error) {
+	action := strings.TrimSpace(req.Action)
+	description := strings.TrimSpace(req.Description)
+
+	if action != "draft" && action != "submit" {
+		return nil, errors.New("invalid daily activity action")
+	}
+
+	if action == "submit" && description == "" {
+		return nil, ErrDescriptionRequired
+	}
+
+	// Gunakan timezone Asia/Jakarta untuk menentukan tanggal aktivitas.
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		return nil, err
+	}
+
+	var activityDate time.Time
+
+	if strings.TrimSpace(req.ActivityDate) == "" {
+		now := time.Now().In(loc)
+		activityDate = time.Date(
+			now.Year(), now.Month(), now.Day(),
+			0, 0, 0, 0, loc,
+		)
+	} else {
+		activityDate, err = time.ParseInLocation(
+			"2006-01-02",
+			strings.TrimSpace(req.ActivityDate),
+			loc,
+		)
+		if err != nil {
+			return nil, errors.New("invalid activity_date format, use YYYY-MM-DD")
+		}
+	}
+
+	var result *entity.DailyActivity
+
+	err = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		txAttendanceRepo := s.attendanceRepo.WithTx(tx)
+		txActivityRepo := s.activityRepo.WithTx(tx)
+
+		// Wajib sudah check-in pada tanggal aktivitas.
+		attendance, err := txAttendanceRepo.FindByUserAndDate(
+			ctx,
+			userID,
+			activityDate,
+		)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrCheckInRequired
+			}
+			return err
+		}
+
+		if attendance == nil {
+			return ErrCheckInRequired
+		}
+
+		// Daily Activity tidak dapat diubah setelah checkout.
+		if attendance.CheckOutTime != nil {
+			return ErrAttendanceAlreadyChecked
+		}
+
+		// Cari Daily Activity berdasarkan user dan tanggal.
+		activity, err := txActivityRepo.FindByUserAndDateForUpdate(
+			ctx,
+			userID,
+			activityDate,
+		)
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			now := time.Now()
+
+			status := DailyActivityStatusDraft
+			isLocked := false
+
+			if action == "submit" {
+				status = DailyActivityStatusSubmitted
+				isLocked = true
+			}
+
+			activity = &entity.DailyActivity{
+				AttendanceID: attendance.ID,
+				UserID:       userID,
+				ActivityDate: activityDate,
+				Description:  description,
+				Status:       status,
+				IsLocked:     isLocked,
+				CreatedBy:    &userID,
+				CreatedAt:    now,
+				IsDeleted:    false,
+			}
+
+			if err := txActivityRepo.Create(ctx, activity); err != nil {
+				return err
+			}
+
+			result = activity
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		// Hanya Draft yang boleh diedit.
+		if activity.Status != DailyActivityStatusDraft ||
+			activity.IsLocked {
+			return ErrActivityLocked
+		}
+
+		now := time.Now()
+
+		activity.Description = description
+		activity.UpdatedBy = &userID
+		activity.UpdatedAt = &now
+
+		if action == "submit" {
+			activity.Status = DailyActivityStatusSubmitted
+			activity.IsLocked = true
+		}
+
+		if err := txActivityRepo.Update(ctx, activity); err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return ErrActivityLocked
+			}
+			return err
+		}
+
+		result = activity
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s *DailyActivityService) UpsertOld(
 	ctx context.Context,
 	userID int64,
 	attendanceID int64,

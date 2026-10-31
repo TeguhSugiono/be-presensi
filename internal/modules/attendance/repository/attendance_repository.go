@@ -22,6 +22,8 @@ type AttendanceRepository interface {
 	Delete(ctx context.Context, attendance *entity.Attendance) error
 	FindAllPaginated(
 		ctx context.Context,
+		userID int64,
+		isAdmin bool,
 		search string,
 		limit, offset int,
 	) ([]*entity.Attendance, int64, error)
@@ -29,6 +31,12 @@ type AttendanceRepository interface {
 	FindByIDForUpdate(
 		ctx context.Context,
 		id int64,
+	) (*entity.Attendance, error)
+
+	FindByUserAndDateForUpdate(
+		ctx context.Context,
+		userID int64,
+		attendanceDate time.Time,
 	) (*entity.Attendance, error)
 }
 
@@ -123,6 +131,8 @@ func (r *attendanceRepository) Delete(
 
 func (r *attendanceRepository) FindAllPaginated(
 	ctx context.Context,
+	userID int64,
+	isAdmin bool,
 	search string,
 	limit, offset int,
 ) ([]*entity.Attendance, int64, error) {
@@ -135,15 +145,21 @@ func (r *attendanceRepository) FindAllPaginated(
 		Where("attendances.is_deleted = ?", false).
 		Where("users.is_deleted = ?", false)
 
+	// Admin melihat seluruh data.
+	// User biasa hanya melihat data absensinya sendiri.
+	if !isAdmin {
+		query = query.Where("attendances.user_id = ?", userID)
+	}
+
 	if search != "" {
 		keyword := "%" + strings.TrimSpace(search) + "%"
 
 		query = query.Where(
 			`(
-				users.full_name ILIKE ?
-				OR CAST(attendances.user_id AS TEXT) ILIKE ?
-				OR CAST(attendances.attendance_date AS TEXT) ILIKE ?
-			)`,
+                users.full_name ILIKE ?
+                OR CAST(attendances.user_id AS TEXT) ILIKE ?
+                OR CAST(attendances.attendance_date AS TEXT) ILIKE ?
+            )`,
 			keyword,
 			keyword,
 			keyword,
@@ -176,6 +192,29 @@ func (r *attendanceRepository) FindByIDForUpdate(
 	err := r.db.WithContext(ctx).
 		Clauses(clause.Locking{Strength: "UPDATE"}).
 		Where("id = ? AND is_deleted = ?", id, false).
+		First(&attendance).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &attendance, nil
+}
+
+func (r *attendanceRepository) FindByUserAndDateForUpdate(
+	ctx context.Context,
+	userID int64,
+	attendanceDate time.Time,
+) (*entity.Attendance, error) {
+	var attendance entity.Attendance
+
+	err := r.db.WithContext(ctx).
+		Clauses(clause.Locking{Strength: "UPDATE"}).
+		Where(
+			"user_id = ? AND attendance_date = ? AND is_deleted = ?",
+			userID,
+			attendanceDate.Format("2006-01-02"),
+			false,
+		).
 		First(&attendance).Error
 	if err != nil {
 		return nil, err

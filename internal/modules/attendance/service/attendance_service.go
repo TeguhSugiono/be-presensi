@@ -69,10 +69,15 @@ func NewAttendanceService(
 
 func (s *AttendanceService) FindAllPaginated(
 	ctx context.Context,
+	userID int64,
 	search string,
 	page int,
 	perPage int,
 ) ([]*attendanceEntity.Attendance, int64, error) {
+	if userID <= 0 {
+		return nil, 0, ErrAttendanceUserNotFound
+	}
+
 	if page < 1 {
 		page = 1
 	}
@@ -85,10 +90,43 @@ func (s *AttendanceService) FindAllPaginated(
 		perPage = 100
 	}
 
+	// Validasi user yang sedang login.
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, 0, ErrAttendanceUserNotFound
+		}
+		return nil, 0, err
+	}
+
+	if user == nil || !user.IsActive || user.IsDeleted {
+		return nil, 0, ErrAttendanceUserNotFound
+	}
+
+	// Tentukan role user.
+	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, 0, ErrAttendanceRoleNotFound
+		}
+		return nil, 0, err
+	}
+
+	if role == nil || role.IsDeleted {
+		return nil, 0, ErrAttendanceRoleNotFound
+	}
+
+	isAdmin := strings.EqualFold(
+		strings.TrimSpace(role.Name),
+		"Admin",
+	)
+
 	offset := (page - 1) * perPage
 
 	return s.attendanceRepo.FindAllPaginated(
 		ctx,
+		userID,
+		isAdmin,
 		strings.TrimSpace(search),
 		perPage,
 		offset,
@@ -302,6 +340,7 @@ func (s *AttendanceService) CheckIn(
 		CreatedBy:          &createdBy,
 		CreatedAt:          createdAt,
 		IsDeleted:          false,
+		KeteranganIn:       req.KeteranganIn,
 	}
 
 	if err := s.attendanceRepo.Create(ctx, attendance); err != nil {
@@ -317,8 +356,7 @@ func (s *AttendanceService) CheckIn(
 func (s *AttendanceService) CheckOut(
 	ctx context.Context,
 	userID int64,
-	attendanceID int64,
-	req dto.CheckOutAttendanceRequest,
+	req *dto.CheckOutAttendanceRequest,
 ) (*attendanceEntity.Attendance, error) {
 	serverTime := time.Now()
 
@@ -335,7 +373,17 @@ func (s *AttendanceService) CheckOut(
 	if err != nil {
 		return nil, err
 	}
+
+	serverTime = serverTime.In(loc)
 	clientTime = clientTime.In(loc)
+
+	attendanceDate := time.Date(
+		serverTime.Year(),
+		serverTime.Month(),
+		serverTime.Day(),
+		0, 0, 0, 0,
+		loc,
+	)
 
 	if strings.TrimSpace(req.CheckOutPhoto) == "" {
 		return nil, errors.New("check-out photo is required")
@@ -376,9 +424,10 @@ func (s *AttendanceService) CheckOut(
 		txAttendanceRepo := s.attendanceRepo.WithTx(tx)
 		txDailyActivityRepo := s.dailyActivityRepo.WithTx(tx)
 
-		attendance, err := txAttendanceRepo.FindByIDForUpdate(
+		attendance, err := txAttendanceRepo.FindByUserAndDateForUpdate(
 			ctx,
-			attendanceID,
+			userID,
+			attendanceDate,
 		)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -414,10 +463,10 @@ func (s *AttendanceService) CheckOut(
 			}
 		}
 
-		activity, err := txDailyActivityRepo.FindByAttendanceIDForUpdate(
+		activity, err := txDailyActivityRepo.FindByUserAndDateForUpdate(
 			ctx,
-			attendance.ID,
 			userID,
+			attendance.AttendanceDate,
 		)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -466,6 +515,7 @@ func (s *AttendanceService) CheckOut(
 		attendance.OutOfAreaNote = note
 		attendance.UpdatedBy = &updatedBy
 		attendance.UpdatedAt = &updatedAt
+		attendance.KeteranganOut = req.KeteranganOut
 
 		if err := txAttendanceRepo.Update(ctx, attendance); err != nil {
 			return err
@@ -567,4 +617,61 @@ func distanceMeters(
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 
 	return earthRadiusMeters * c
+}
+
+func (s *AttendanceService) GetAttendanceDetail(
+	ctx context.Context,
+	userID int64,
+	attendanceID int64,
+) (*attendanceEntity.Attendance, error) {
+	if userID <= 0 || attendanceID <= 0 {
+		return nil, ErrAttendanceNotFound
+	}
+
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceUserNotFound
+		}
+		return nil, err
+	}
+
+	if user == nil || !user.IsActive || user.IsDeleted {
+		return nil, ErrAttendanceUserNotFound
+	}
+
+	attendance, err := s.attendanceRepo.FindByID(ctx, attendanceID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceNotFound
+		}
+		return nil, err
+	}
+
+	if attendance == nil || attendance.IsDeleted {
+		return nil, ErrAttendanceNotFound
+	}
+
+	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceRoleNotFound
+		}
+		return nil, err
+	}
+
+	if role == nil || role.IsDeleted {
+		return nil, ErrAttendanceRoleNotFound
+	}
+
+	isAdmin := strings.EqualFold(
+		strings.TrimSpace(role.Name),
+		"Admin",
+	)
+
+	if attendance.UserID != userID && !isAdmin {
+		return nil, ErrAttendanceNotFound
+	}
+
+	return attendance, nil
 }

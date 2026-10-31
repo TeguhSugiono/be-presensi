@@ -12,11 +12,13 @@ type Attendance struct {
 	CheckInPhoto       string     `gorm:"column:check_in_photo;type:text;not null"`
 	CheckInLat         float64    `gorm:"column:check_in_lat;type:numeric;not null"`
 	CheckInLng         float64    `gorm:"column:check_in_lng;type:numeric;not null"`
+	KeteranganIn       *string    `gorm:"column:keterangan_in;type:text"`
 	IsLate             bool       `gorm:"column:is_late;not null;default:false"`
 	CheckOutTime       *time.Time `gorm:"column:check_out_time"`
 	CheckOutPhoto      *string    `gorm:"column:check_out_photo;type:text"`
 	CheckOutLat        *float64   `gorm:"column:check_out_lat;type:numeric"`
 	CheckOutLng        *float64   `gorm:"column:check_out_lng;type:numeric"`
+	KeteranganOut      *string    `gorm:"column:keterangan_out;type:text"`
 	IsOutOfArea        bool       `gorm:"column:is_out_of_area;not null;default:false"`
 	OutOfAreaNote      *string    `gorm:"column:out_of_area_note;type:text"`
 	CreatedBy          *int64     `gorm:"column:created_by"`

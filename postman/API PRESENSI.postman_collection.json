@@ -423,7 +423,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"email\": \"teguh@gmail.com\",\r\n//     \"password\": \"teguh12345\"\r\n// }\r\n\r\n\r\n// {\r\n//     \"email\": \"wiro@gmail.com\",\r\n//     \"password\": \"987654321\"\r\n// }\r\n\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n{\r\n  \"email\": \"jaenudin@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n\r\n// {\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }",
+              "raw": "// {\r\n//     \"email\": \"teguh@gmail.com\",\r\n//     \"password\": \"teguh12345\"\r\n// }\r\n\r\n\r\n{\r\n    \"email\": \"wiro@gmail.com\",\r\n    \"password\": \"987654321\"\r\n}\r\n\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"jaenudin@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -454,7 +454,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkxODgyMTkwLCJpYXQiOjE3OTE3OTU3OTB9.NhmTvmsffq580rZS3qrcNbxWtlb48zD4qJyUOLMY8yg",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJzdWIiOiI5IiwiZXhwIjoxNzkyNDE3MzY4LCJpYXQiOjE3OTIzMzA5Njh9.5D-uWeqGa-nzceeupW8sFsyKpanpgV-pnBkTusNIQTM",
                   "type": "string"
                 }
               ]
@@ -930,7 +930,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
+                  "value": "{{json_web_token_0g42}}",
                   "type": "string"
                 }
               ]
@@ -942,12 +942,12 @@
               "formdata": [
                 {
                   "key": "check_in_date",
-                  "value": "2026-10-18",
+                  "value": "2026-10-31",
                   "type": "text"
                 },
                 {
                   "key": "check_in_time",
-                  "value": "19:45:00",
+                  "value": "07:56:00",
                   "type": "text"
                 },
                 {
@@ -965,6 +965,11 @@
                 {
                   "key": "check_in_lng",
                   "value": "107.3",
+                  "type": "text"
+                },
+                {
+                  "key": "keterangan_in",
+                  "value": "Datang tepat waktu",
                   "type": "text"
                 }
               ]
@@ -993,7 +998,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
+                  "value": "{{json_web_token_0z3i}}",
                   "type": "string"
                 }
               ]
@@ -1005,12 +1010,12 @@
               "formdata": [
                 {
                   "key": "check_out_date",
-                  "value": "2026-10-18",
+                  "value": "2026-10-31",
                   "type": "text"
                 },
                 {
                   "key": "check_out_time",
-                  "value": "19:51:00",
+                  "value": "08:01:00",
                   "type": "text"
                 },
                 {
@@ -1034,11 +1039,16 @@
                   "key": "out_of_area_note",
                   "value": "Cek Out Diluar Area",
                   "type": "text"
+                },
+                {
+                  "key": "keterangan_out",
+                  "value": "Selesai bekerja",
+                  "type": "text"
                 }
               ]
             },
             "url": {
-              "raw": "http://localhost:8080/api/attendances/7/check-out",
+              "raw": "http://localhost:8080/api/attendances/check-out",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1047,7 +1057,6 @@
               "path": [
                 "api",
                 "attendances",
-                "7",
                 "check-out"
               ]
             }
@@ -1062,7 +1071,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyNDE1NTI2LCJpYXQiOjE3OTIzMjkxMjZ9.CJ02KnZz3OzeMB-poGXYuYXeZsicdtsmaotHxE_cllA",
+                  "value": "{{json_web_token_13ib}}",
                   "type": "string"
                 }
               ]
@@ -1084,7 +1093,7 @@
               "query": [
                 {
                   "key": "search",
-                  "value": "Jaenudin",
+                  "value": "yul",
                   "disabled": true
                 },
                 {
@@ -1140,6 +1149,45 @@
           "response": []
         },
         {
+          "name": "Get Foto Cek In Detail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0y4z}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/9/check-in-detail",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "9",
+                "check-in-detail"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Jaenudin",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get Foto Cek  Out",
           "request": {
             "auth": {
@@ -1177,12 +1225,98 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get Foto Cek  Out Detail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0y4z}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/9/check-out-detail",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "9",
+                "check-out-detail"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Jaenudin",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Daily Activities Module",
       "item": [
+        {
+          "name": "old",
+          "item": [
+            {
+              "name": "Create Daily Activity InsertUpdate With ID",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//   \"description\": \"TEEST DRAFT UPDATE\",\r\n//   \"action\": \"draft\"\r\n// }\r\n\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n{\r\n  \"description\": \"TEST DRAFT TO SUBMIT\",\r\n  \"action\": \"submit\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/daily-activities/attendances/7/upsert",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "daily-activities",
+                    "attendances",
+                    "7",
+                    "upsert"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
         {
           "name": "Create Daily Activity",
           "request": {
@@ -1219,48 +1353,6 @@
                 "daily-activities",
                 "attendances",
                 "4"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Daily Activity InsertUpdate",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwic3ViIjoiMTEiLCJleHAiOjE3OTI0MTM3OTYsImlhdCI6MTc5MjMyNzM5Nn0.mR23way6M07H0MzkvMGRlIw4Y4ILMF7pbsWVz01StXE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//   \"description\": \"TEEST DRAFT UPDATE\",\r\n//   \"action\": \"draft\"\r\n// }\r\n\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n{\r\n  \"description\": \"TEST DRAFT TO SUBMIT\",\r\n  \"action\": \"submit\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/daily-activities/attendances/7/upsert",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "api",
-                "daily-activities",
-                "attendances",
-                "7",
-                "upsert"
               ]
             }
           },
@@ -1421,6 +1513,46 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Create Daily Activity InsertUpdate With Date",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_13ib}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//     //\"activity_date\": \"2026-10-31\",\r\n//     \"description\": \"Wito Menyelesaikan pekerjaan update\",\r\n//     \"action\": \"draft\"\r\n// }\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n\r\n{\r\n  //\"activity_date\": \"2026-10-31\",\r\n  \"description\": \"TEST DRAFT TO SUBMIT Wito Menyelesaikan pekerjaan\",\r\n  \"action\": \"submit\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/daily-activities/upsert",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "daily-activities",
+                "upsert"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
@@ -1446,6 +1578,34 @@
     },
     {
       "key": "json_web_token_0mgf",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_02un",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0px8",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0l9u",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0y4z",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_13ib",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0g42",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0z3i",
       "secret": true
     }
   ]

@@ -38,8 +38,13 @@ func RegisterDailyActivityRoutes(
 		dailyActivityHandler.GetByDate,
 	)
 
+	// group.POST(
+	// 	"/attendances/:attendance_id/upsert",
+	// 	dailyActivityHandler.Upsert,
+	// )
+
 	group.POST(
-		"/attendances/:attendance_id/upsert",
+		"/upsert",
 		dailyActivityHandler.Upsert,
 	)
 

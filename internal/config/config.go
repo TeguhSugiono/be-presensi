@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	AppName string
-	AppEnv  string
-	AppPort string
+	AppName    string
+	AppEnv     string
+	AppPort    string
+	AppBaseURL string
 
 	DBHost     string
 	DBPort     string
@@ -24,9 +25,10 @@ func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		AppName: getEnv("APP_NAME", "backend-presensi"),
-		AppEnv:  getEnv("APP_ENV", "development"),
-		AppPort: getEnv("APP_PORT", "8080"),
+		AppName:    getEnv("APP_NAME", "backend-presensi"),
+		AppEnv:     getEnv("APP_ENV", "development"),
+		AppPort:    getEnv("APP_PORT", "8080"),
+		AppBaseURL: getEnv("APP_BASE_URL", "http://localhost:8080"),
 
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),

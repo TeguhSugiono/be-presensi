@@ -19,15 +19,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// type AttendanceHandler struct {
+// 	attendanceService *service.AttendanceService
+// }
+
+// func NewAttendanceHandler(
+// 	attendanceService *service.AttendanceService,
+// ) *AttendanceHandler {
+// 	return &AttendanceHandler{
+// 		attendanceService: attendanceService,
+// 	}
+// }
+
 type AttendanceHandler struct {
 	attendanceService *service.AttendanceService
+	appBaseURL        string
 }
 
 func NewAttendanceHandler(
 	attendanceService *service.AttendanceService,
+	appBaseURL string,
 ) *AttendanceHandler {
 	return &AttendanceHandler{
 		attendanceService: attendanceService,
+		appBaseURL:        strings.TrimRight(appBaseURL, "/"),
 	}
 }
 
@@ -91,11 +106,11 @@ func (h *AttendanceHandler) CheckOut(c *gin.Context) {
 		return
 	}
 
-	attendanceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || attendanceID <= 0 {
-		response.Error(c, http.StatusBadRequest, "invalid attendance id")
-		return
-	}
+	// attendanceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	// if err != nil || attendanceID <= 0 {
+	// 	response.Error(c, http.StatusBadRequest, "invalid attendance id")
+	// 	return
+	// }
 
 	var req dto.CheckOutAttendanceRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -123,8 +138,7 @@ func (h *AttendanceHandler) CheckOut(c *gin.Context) {
 	attendance, err := h.attendanceService.CheckOut(
 		c.Request.Context(),
 		userID,
-		attendanceID,
-		req,
+		&req,
 	)
 	if err != nil {
 		_ = os.Remove(photoPath)
@@ -234,6 +248,13 @@ func (h *AttendanceHandler) serveAttendancePhoto(
 // FindAllPaginated godoc
 // GET /api/attendances/paginated?page=1&per_page=10&search=
 func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
+
+	userID, ok := middleware.GetUserID(c)
+	if !ok || userID <= 0 {
+		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
+		return
+	}
+
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil || page < 1 {
 		response.Error(c, http.StatusBadRequest, "invalid page")
@@ -252,12 +273,21 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 
 	search := strings.TrimSpace(c.Query("search"))
 
+	// attendances, total, err := h.attendanceService.FindAllPaginated(
+	// 	c.Request.Context(),
+	// 	search,
+	// 	page,
+	// 	perPage,
+	// )
+
 	attendances, total, err := h.attendanceService.FindAllPaginated(
 		c.Request.Context(),
+		userID,
 		search,
 		page,
 		perPage,
 	)
+
 	if err != nil {
 		c.Error(err)
 		response.Error(
@@ -284,15 +314,18 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 			CheckInPhoto:       item.CheckInPhoto,
 			CheckInLat:         item.CheckInLat,
 			CheckInLng:         item.CheckInLng,
-			IsLate:             item.IsLate,
-			CheckOutTime:       item.CheckOutTime,
-			CheckOutPhoto:      item.CheckOutPhoto,
-			CheckOutLat:        item.CheckOutLat,
-			CheckOutLng:        item.CheckOutLng,
-			IsOutOfArea:        item.IsOutOfArea,
-			OutOfAreaNote:      item.OutOfAreaNote,
-			CreatedAt:          item.CreatedAt,
-			UpdatedAt:          item.UpdatedAt,
+			KeteranganIn:       item.KeteranganIn,
+
+			IsLate:        item.IsLate,
+			CheckOutTime:  item.CheckOutTime,
+			CheckOutPhoto: item.CheckOutPhoto,
+			CheckOutLat:   item.CheckOutLat,
+			CheckOutLng:   item.CheckOutLng,
+			KeteranganOut: item.KeteranganOut,
+			IsOutOfArea:   item.IsOutOfArea,
+			OutOfAreaNote: item.OutOfAreaNote,
+			CreatedAt:     item.CreatedAt,
+			UpdatedAt:     item.UpdatedAt,
 		})
 	}
 
@@ -342,12 +375,19 @@ func (h *AttendanceHandler) handleAttendanceError(
 	err error,
 ) {
 	switch {
-	case errors.Is(err, service.ErrInvalidAttendanceTime),
-		errors.Is(err, service.ErrAttendanceTimeMismatch):
+
+	case errors.Is(err, service.ErrAttendanceTimeMismatch):
 		response.Error(
 			c,
 			http.StatusBadRequest,
-			"unable to process attendance request",
+			"Waktu yang anda kirim, tidak sesuai dengan waktu saat ini, Silahkan untuk lakukan absen kembali",
+		)
+
+	case errors.Is(err, service.ErrInvalidAttendanceTime):
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"Format tanggal atau waktu absensi tidak valid",
 		)
 
 	case errors.Is(err, service.ErrAttendanceUserNotFound),
@@ -359,10 +399,17 @@ func (h *AttendanceHandler) handleAttendanceError(
 			err.Error(),
 		)
 
+	case errors.Is(err, service.ErrDailyActivityRequired),
+		errors.Is(err, service.ErrDailyActivityNotSubmitted):
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"Silakan submit Daily Activity terlebih dahulu sebelum melakukan checkout.",
+		)
+
 	case errors.Is(err, service.ErrAttendanceAlreadyExists),
 		errors.Is(err, service.ErrAttendanceAlreadyCheckedOut),
 		errors.Is(err, service.ErrAttendanceScheduleNotEnded),
-		errors.Is(err, service.ErrDailyActivityRequired),
 		errors.Is(err, service.ErrDailyActivityLocked),
 		errors.Is(err, service.ErrAttendanceScheduleRequired):
 		response.Error(
@@ -393,6 +440,91 @@ func (h *AttendanceHandler) handleAttendanceError(
 			c,
 			http.StatusInternalServerError,
 			"failed to process attendance",
+		)
+	}
+}
+
+func (h *AttendanceHandler) CheckInDetail(c *gin.Context) {
+	h.getAttendanceDetail(c, "check-in")
+}
+
+func (h *AttendanceHandler) CheckOutDetail(c *gin.Context) {
+	h.getAttendanceDetail(c, "check-out")
+}
+
+func (h *AttendanceHandler) getAttendanceDetail(
+	c *gin.Context,
+	detailType string,
+) {
+	userID, ok := middleware.GetUserID(c)
+	if !ok || userID <= 0 {
+		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
+		return
+	}
+
+	attendanceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil || attendanceID <= 0 {
+		response.Error(c, http.StatusBadRequest, "invalid attendance id")
+		return
+	}
+
+	attendance, err := h.attendanceService.GetAttendanceDetail(
+		c.Request.Context(),
+		userID,
+		attendanceID,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrAttendanceNotFound),
+			errors.Is(err, service.ErrAttendanceUserNotFound),
+			errors.Is(err, service.ErrAttendanceRoleNotFound):
+			response.Error(c, http.StatusNotFound, "attendance not found")
+		default:
+			c.Error(err)
+			response.Error(c, http.StatusInternalServerError, "failed to retrieve attendance detail")
+		}
+		return
+	}
+
+	switch detailType {
+	case "check-in":
+		response.Success(
+			c,
+			http.StatusOK,
+			"check-in detail retrieved successfully",
+			dto.AttendanceCheckInDetailResponse{
+				ID:             attendance.ID,
+				AttendanceDate: attendance.AttendanceDate.Format("2006-01-02"),
+				CheckInTime:    attendance.CheckInTime.Format("2006-01-02 15:04:05"),
+				PhotoURL:       h.appBaseURL + "/api/attendances/" + strconv.FormatInt(attendance.ID, 10) + "/check-in-photo",
+				Latitude:       attendance.CheckInLat,
+				Longitude:      attendance.CheckInLng,
+				Keterangan:     attendance.KeteranganIn,
+			},
+		)
+
+	case "check-out":
+		if attendance.CheckOutTime == nil ||
+			attendance.CheckOutPhoto == nil ||
+			attendance.CheckOutLat == nil ||
+			attendance.CheckOutLng == nil {
+			response.Error(c, http.StatusNotFound, "check-out detail not found")
+			return
+		}
+
+		response.Success(
+			c,
+			http.StatusOK,
+			"check-out detail retrieved successfully",
+			dto.AttendanceCheckOutDetailResponse{
+				ID:             attendance.ID,
+				AttendanceDate: attendance.AttendanceDate.Format("2006-01-02"),
+				CheckOutTime:   attendance.CheckOutTime.Format("2006-01-02 15:04:05"),
+				PhotoURL:       h.appBaseURL + "/api/attendances/" + strconv.FormatInt(attendance.ID, 10) + "/check-out-photo",
+				Latitude:       *attendance.CheckOutLat,
+				Longitude:      *attendance.CheckOutLng,
+				Keterangan:     attendance.KeteranganOut,
+			},
 		)
 	}
 }

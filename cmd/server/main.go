@@ -110,7 +110,11 @@ func main() {
 		schoolLocationRepo,
 	)
 
-	attendanceHdl := attendanceHandler.NewAttendanceHandler(attendanceSvc)
+	// attendanceHdl := attendanceHandler.NewAttendanceHandler(attendanceSvc)
+	attendanceHdl := attendanceHandler.NewAttendanceHandler(
+		attendanceSvc,
+		cfg.AppBaseURL,
+	)
 
 	attendanceRoutes.RegisterAttendanceRoutes(
 		router,

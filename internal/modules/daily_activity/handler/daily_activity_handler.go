@@ -215,6 +215,13 @@ func (h *DailyActivityHandler) handleError(
 	case errors.Is(err, gorm.ErrRecordNotFound):
 		response.Error(c, http.StatusNotFound, "daily activity not found")
 
+	case errors.Is(err, service.ErrCheckInRequired):
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"Silakan lakukan check-in terlebih dahulu sebelum membuat Daily Activity.",
+		)
+
 	default:
 		c.Error(err)
 		response.Error(
@@ -224,7 +231,6 @@ func (h *DailyActivityHandler) handleError(
 		)
 	}
 }
-
 func (h *DailyActivityHandler) Upsert(c *gin.Context) {
 	userID, ok := middleware.GetUserID(c)
 	if !ok || userID <= 0 {
@@ -232,16 +238,6 @@ func (h *DailyActivityHandler) Upsert(c *gin.Context) {
 			c,
 			http.StatusUnauthorized,
 			"invalid authenticated user",
-		)
-		return
-	}
-
-	attendanceID, ok := parseAttendanceID(c)
-	if !ok {
-		response.Error(
-			c,
-			http.StatusBadRequest,
-			"invalid attendance id",
 		)
 		return
 	}
@@ -259,7 +255,6 @@ func (h *DailyActivityHandler) Upsert(c *gin.Context) {
 	activity, err := h.service.Upsert(
 		c.Request.Context(),
 		userID,
-		attendanceID,
 		req,
 	)
 	if err != nil {
