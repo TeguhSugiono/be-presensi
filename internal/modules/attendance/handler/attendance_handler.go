@@ -161,35 +161,29 @@ func (h *AttendanceHandler) CheckInPhoto(c *gin.Context) {
 func (h *AttendanceHandler) CheckOutPhoto(c *gin.Context) {
 	h.serveAttendancePhoto(c, "check-out")
 }
-
 func (h *AttendanceHandler) serveAttendancePhoto(
 	c *gin.Context,
 	photoType string,
 ) {
-	userID, ok := middleware.GetUserID(c)
-	if !ok || userID <= 0 {
-		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
-		return
-	}
-
+	// Validate attendance ID.
 	attendanceID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil || attendanceID <= 0 {
 		response.Error(c, http.StatusBadRequest, "invalid attendance id")
 		return
 	}
 
+	// Retrieve photo path without authentication.
 	photoPath, err := h.attendanceService.GetAttendancePhoto(
 		c.Request.Context(),
-		userID,
 		attendanceID,
 		photoType,
 	)
 	if err != nil {
 		switch {
 		case errors.Is(err, service.ErrAttendanceNotFound),
-			errors.Is(err, service.ErrAttendancePhotoNotFound),
-			errors.Is(err, service.ErrAttendanceUserNotFound):
+			errors.Is(err, service.ErrAttendancePhotoNotFound):
 			response.Error(c, http.StatusNotFound, "attendance photo not found")
+
 		default:
 			c.Error(err)
 			response.Error(
@@ -201,7 +195,7 @@ func (h *AttendanceHandler) serveAttendancePhoto(
 		return
 	}
 
-	// Only permit files inside the expected private photo directory.
+	// Only permit files inside the expected attendance photo directory.
 	expectedDir := filepath.Join("assets", "attendance", photoType)
 	cleanPath := filepath.Clean(photoPath)
 
@@ -215,19 +209,28 @@ func (h *AttendanceHandler) serveAttendancePhoto(
 	absolutePath, err := filepath.Abs(cleanPath)
 	if err != nil {
 		c.Error(err)
-		response.Error(c, http.StatusInternalServerError, "failed to retrieve attendance photo")
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to retrieve attendance photo",
+		)
 		return
 	}
 
 	expectedAbsoluteDir, err := filepath.Abs(expectedDir)
 	if err != nil {
 		c.Error(err)
-		response.Error(c, http.StatusInternalServerError, "failed to retrieve attendance photo")
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to retrieve attendance photo",
+		)
 		return
 	}
 
 	relativePath, err := filepath.Rel(expectedAbsoluteDir, absolutePath)
-	if err != nil || relativePath == ".." ||
+	if err != nil ||
+		relativePath == ".." ||
 		strings.HasPrefix(relativePath, ".."+string(filepath.Separator)) {
 		response.Error(c, http.StatusNotFound, "attendance photo not found")
 		return
@@ -239,7 +242,8 @@ func (h *AttendanceHandler) serveAttendancePhoto(
 		return
 	}
 
-	c.Header("Cache-Control", "private, no-store")
+	// Display image directly in browser.
+	c.Header("Cache-Control", "no-store")
 	c.Header("X-Content-Type-Options", "nosniff")
 	c.Header("Content-Type", "image/jpeg")
 	c.File(absolutePath)
@@ -527,4 +531,45 @@ func (h *AttendanceHandler) getAttendanceDetail(
 			},
 		)
 	}
+}
+
+// GetTodayAttendance godoc
+// GET /api/attendances/today
+func (h *AttendanceHandler) GetTodayAttendance(c *gin.Context) {
+	userID, ok := middleware.GetUserID(c)
+	if !ok || userID <= 0 {
+		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
+		return
+	}
+
+	attendance, err := h.attendanceService.GetTodayAttendance(
+		c.Request.Context(),
+		userID,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrAttendanceNotFound):
+			response.Error(c, http.StatusNotFound, "attendance not found")
+
+		case errors.Is(err, service.ErrAttendanceUserNotFound),
+			errors.Is(err, service.ErrAttendanceRoleNotFound):
+			response.Error(c, http.StatusNotFound, err.Error())
+
+		default:
+			c.Error(err)
+			response.Error(
+				c,
+				http.StatusInternalServerError,
+				"failed to retrieve today's attendance",
+			)
+		}
+		return
+	}
+
+	response.Success(
+		c,
+		http.StatusOK,
+		"attendance detail retrieved successfully",
+		dto.ToAttendanceTodayResponse(attendance, h.appBaseURL),
+	)
 }

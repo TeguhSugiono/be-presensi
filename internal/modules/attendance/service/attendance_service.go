@@ -133,33 +133,17 @@ func (s *AttendanceService) FindAllPaginated(
 	)
 }
 
-// GetAttendancePhoto returns a private attendance photo path.
-// Only the attendance owner or an Admin can access it.
 func (s *AttendanceService) GetAttendancePhoto(
 	ctx context.Context,
-	userID int64,
 	attendanceID int64,
 	photoType string,
 ) (string, error) {
-	if userID <= 0 || attendanceID <= 0 {
+	if attendanceID <= 0 {
 		return "", ErrAttendanceNotFound
 	}
 
 	if photoType != "check-in" && photoType != "check-out" {
 		return "", ErrAttendancePhotoNotFound
-	}
-
-	// Validate the authenticated user.
-	user, err := s.userRepo.FindByID(userID)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return "", ErrAttendanceUserNotFound
-		}
-		return "", err
-	}
-
-	if user == nil || !user.IsActive || user.IsDeleted {
-		return "", ErrAttendanceUserNotFound
 	}
 
 	// Load attendance.
@@ -175,30 +159,13 @@ func (s *AttendanceService) GetAttendancePhoto(
 		return "", ErrAttendanceNotFound
 	}
 
-	// Determine whether the authenticated user is an Admin.
-	isAdmin := false
-
-	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
-	if err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return "", err
-		}
-	} else if role != nil && !role.IsDeleted &&
-		strings.EqualFold(strings.TrimSpace(role.Name), "Admin") {
-		isAdmin = true
-	}
-
-	// Hide attendance existence from unauthorized users.
-	if attendance.UserID != userID && !isAdmin {
-		return "", ErrAttendanceNotFound
-	}
-
 	// Return only the requested photo path.
 	var photoPath string
 
 	switch photoType {
 	case "check-in":
 		photoPath = attendance.CheckInPhoto
+
 	case "check-out":
 		if attendance.CheckOutPhoto != nil {
 			photoPath = *attendance.CheckOutPhoto
@@ -670,6 +637,62 @@ func (s *AttendanceService) GetAttendanceDetail(
 	)
 
 	if attendance.UserID != userID && !isAdmin {
+		return nil, ErrAttendanceNotFound
+	}
+
+	return attendance, nil
+}
+func (s *AttendanceService) GetTodayAttendance(
+	ctx context.Context,
+	userID int64,
+) (*attendanceEntity.Attendance, error) {
+	if userID <= 0 {
+		return nil, ErrAttendanceUserNotFound
+	}
+
+	// Validate authenticated user.
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceUserNotFound
+		}
+		return nil, err
+	}
+
+	if user == nil || !user.IsActive || user.IsDeleted {
+		return nil, ErrAttendanceUserNotFound
+	}
+
+	// Get today's date using Asia/Jakarta timezone.
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now().In(loc)
+
+	attendanceDate := time.Date(
+		now.Year(),
+		now.Month(),
+		now.Day(),
+		0, 0, 0, 0,
+		loc,
+	)
+
+	// Find attendance belonging to the authenticated user.
+	attendance, err := s.attendanceRepo.FindByUserAndDate(
+		ctx,
+		userID,
+		attendanceDate,
+	)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceNotFound
+		}
+		return nil, err
+	}
+
+	if attendance == nil || attendance.IsDeleted {
 		return nil, ErrAttendanceNotFound
 	}
 

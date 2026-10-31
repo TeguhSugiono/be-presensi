@@ -930,7 +930,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0g42}}",
+                  "value": "{{json_web_token_15mp}}",
                   "type": "string"
                 }
               ]
@@ -947,7 +947,7 @@
                 },
                 {
                   "key": "check_in_time",
-                  "value": "07:56:00",
+                  "value": "09:13:00",
                   "type": "text"
                 },
                 {
@@ -1015,7 +1015,7 @@
                 },
                 {
                   "key": "check_out_time",
-                  "value": "08:01:00",
+                  "value": "09:14:00",
                   "type": "text"
                 },
                 {
@@ -1071,7 +1071,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_13ib}}",
+                  "value": "{{json_web_token_15mp}}",
                   "type": "string"
                 }
               ]
@@ -1117,7 +1117,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJzdWIiOiI5IiwiZXhwIjoxNzkyNDE2OTg4LCJpYXQiOjE3OTIzMzA1ODh9.xSy80IAVCyAn0Dx2H5Rni0CdLnNl7HzzXXV5f5pNpoE\",",
+                  "value": "{{json_web_token_15mp}}",
                   "type": "string"
                 }
               ]
@@ -1125,7 +1125,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/attendances/7/check-in-photo",
+              "raw": "http://localhost:8080/api/attendances/1/check-in-photo",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1134,7 +1134,7 @@
               "path": [
                 "api",
                 "attendances",
-                "7",
+                "1",
                 "check-in-photo"
               ],
               "query": [
@@ -1156,7 +1156,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0y4z}}",
+                  "value": "{{json_web_token_15mp}}",
                   "type": "string"
                 }
               ]
@@ -1164,7 +1164,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/attendances/9/check-in-detail",
+              "raw": "http://localhost:8080/api/attendances/1/check-in-detail",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1173,7 +1173,7 @@
               "path": [
                 "api",
                 "attendances",
-                "9",
+                "1",
                 "check-in-detail"
               ],
               "query": [
@@ -1203,7 +1203,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/attendances/7/check-out-photo",
+              "raw": "http://localhost:8080/api/attendances/1/check-out-photo",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1212,7 +1212,7 @@
               "path": [
                 "api",
                 "attendances",
-                "7",
+                "1",
                 "check-out-photo"
               ],
               "query": [
@@ -1234,7 +1234,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0y4z}}",
+                  "value": "{{json_web_token_15mp}}",
                   "type": "string"
                 }
               ]
@@ -1242,7 +1242,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/attendances/9/check-out-detail",
+              "raw": "http://localhost:8080/api/attendances/1/check-out-detail",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1251,7 +1251,7 @@
               "path": [
                 "api",
                 "attendances",
-                "9",
+                "1",
                 "check-out-detail"
               ],
               "query": [
@@ -1260,6 +1260,37 @@
                   "value": "Jaenudin",
                   "disabled": true
                 }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Attendance Today",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_15mp}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/today",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "today"
               ]
             }
           },
@@ -1606,6 +1637,10 @@
     },
     {
       "key": "json_web_token_0z3i",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_15mp",
       "secret": true
     }
   ]

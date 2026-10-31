@@ -85,3 +85,20 @@ type AttendanceCheckOutDetailResponse struct {
 	Longitude      float64 `json:"longitude"`
 	Keterangan     *string `json:"keterangan"`
 }
+
+type AttendanceTodayResponse struct {
+	ID             *int64  `json:"id"`
+	AttendanceDate *string `json:"attendance_date"`
+
+	CheckInTime  *string  `json:"check_in_time"`
+	PhotoURLIn   *string  `json:"photo_url_in"`
+	LatitudeIn   *float64 `json:"latitude_in"`
+	LongitudeIn  *float64 `json:"longitude_in"`
+	KeteranganIn *string  `json:"keterangan_in"`
+
+	CheckOutTime  *string  `json:"check_out_time"`
+	PhotoURLOut   *string  `json:"photo_url_out"`
+	LatitudeOut   *float64 `json:"latitude_out"`
+	LongitudeOut  *float64 `json:"longitude_out"`
+	KeteranganOut *string  `json:"keterangan_out"`
+}
