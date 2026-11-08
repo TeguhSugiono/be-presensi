@@ -41,29 +41,54 @@ type AttendanceResponse struct {
 	CreatedAt          string   `json:"created_at"`
 	UpdatedAt          *string  `json:"updated_at"`
 }
-type AttendanceListResponse struct {
-	ID                 int64   `json:"id"`
-	UserID             int64   `json:"user_id"`
-	UserName           string  `json:"user_name"`
-	AttendanceDate     string  `json:"attendance_date"`
-	ScheduledStartTime *string `json:"scheduled_start_time"`
-	ScheduledEndTime   *string `json:"scheduled_end_time"`
-	CheckInTime        string  `json:"check_in_time"`
-	CheckInPhoto       string  `json:"check_in_photo"`
-	CheckInLat         float64 `json:"check_in_lat"`
-	CheckInLng         float64 `json:"check_in_lng"`
-	KeteranganIn       *string `json:"keterangan_in"`
 
-	IsLate        bool     `json:"is_late"`
-	CheckOutTime  *string  `json:"check_out_time"`
-	CheckOutPhoto *string  `json:"check_out_photo"`
-	CheckOutLat   *float64 `json:"check_out_lat"`
-	CheckOutLng   *float64 `json:"check_out_lng"`
-	KeteranganOut *string  `json:"keterangan_out"`
-	IsOutOfArea   bool     `json:"is_out_of_area"`
-	OutOfAreaNote *string  `json:"out_of_area_note"`
-	CreatedAt     string   `json:"created_at"`
-	UpdatedAt     *string  `json:"updated_at"`
+// type AttendanceListResponse struct {
+// 	ID                 int64   `json:"id"`
+// 	UserID             int64   `json:"user_id"`
+// 	UserName           string  `json:"user_name"`
+// 	AttendanceDate     string  `json:"attendance_date"`
+// 	ScheduledStartTime *string `json:"scheduled_start_time"`
+// 	ScheduledEndTime   *string `json:"scheduled_end_time"`
+// 	CheckInTime        string  `json:"check_in_time"`
+// 	CheckInPhoto       string  `json:"check_in_photo"`
+// 	CheckInLat         float64 `json:"check_in_lat"`
+// 	CheckInLng         float64 `json:"check_in_lng"`
+// 	KeteranganIn       *string `json:"keterangan_in"`
+
+// 	IsLate        bool     `json:"is_late"`
+// 	CheckOutTime  *string  `json:"check_out_time"`
+// 	CheckOutPhoto *string  `json:"check_out_photo"`
+// 	CheckOutLat   *float64 `json:"check_out_lat"`
+// 	CheckOutLng   *float64 `json:"check_out_lng"`
+// 	KeteranganOut *string  `json:"keterangan_out"`
+// 	IsOutOfArea   bool     `json:"is_out_of_area"`
+// 	OutOfAreaNote *string  `json:"out_of_area_note"`
+// 	CreatedAt     string   `json:"created_at"`
+// 	UpdatedAt     *string  `json:"updated_at"`
+// }
+
+type AttendanceListResponse struct {
+	ID                 *int64   `json:"id"`
+	UserID             int64    `json:"user_id"`
+	UserName           string   `json:"user_name"`
+	AttendanceDate     *string  `json:"attendance_date"`
+	ScheduledStartTime *string  `json:"scheduled_start_time"`
+	ScheduledEndTime   *string  `json:"scheduled_end_time"`
+	CheckInTime        *string  `json:"check_in_time"`
+	CheckInPhoto       *string  `json:"check_in_photo"`
+	CheckInLat         *float64 `json:"check_in_lat"`
+	CheckInLng         *float64 `json:"check_in_lng"`
+	KeteranganIn       *string  `json:"keterangan_in"`
+	IsLate             *bool    `json:"is_late"`
+	CheckOutTime       *string  `json:"check_out_time"`
+	CheckOutPhoto      *string  `json:"check_out_photo"`
+	CheckOutLat        *float64 `json:"check_out_lat"`
+	CheckOutLng        *float64 `json:"check_out_lng"`
+	KeteranganOut      *string  `json:"keterangan_out"`
+	IsOutOfArea        *bool    `json:"is_out_of_area"`
+	OutOfAreaNote      *string  `json:"out_of_area_note"`
+	CreatedAt          *string  `json:"created_at"`
+	UpdatedAt          *string  `json:"updated_at"`
 }
 
 type AttendanceCheckInDetailResponse struct {
@@ -101,4 +126,12 @@ type AttendanceTodayResponse struct {
 	LatitudeOut   *float64 `json:"latitude_out"`
 	LongitudeOut  *float64 `json:"longitude_out"`
 	KeteranganOut *string  `json:"keterangan_out"`
+}
+
+type AttendanceSummaryResponse struct {
+	Date        string `json:"date"`
+	TotalUsers  int64  `json:"total_users"`
+	ClockIn     int64  `json:"clock_in"`
+	ClockOut    int64  `json:"clock_out"`
+	NotAttended int64  `json:"not_attended"`
 }

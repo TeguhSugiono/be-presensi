@@ -31,6 +31,7 @@ func RegisterAttendanceRoutes(
 		attendance.POST("/check-out", attendanceHandler.CheckOut)
 
 		attendance.GET("/paginated", attendanceHandler.FindAllPaginated)
+		attendance.GET("/summary", attendanceHandler.GetSummary)
 
 		attendance.GET("/:id/check-in-detail", attendanceHandler.CheckInDetail)
 		attendance.GET("/:id/check-out-detail", attendanceHandler.CheckOutDetail)
@@ -38,36 +39,3 @@ func RegisterAttendanceRoutes(
 		attendance.GET("/today", attendanceHandler.GetTodayAttendance)
 	}
 }
-
-// func RegisterAttendanceRoutes(
-// 	router *gin.Engine,
-// 	attendanceHandler *handler.AttendanceHandler,
-// 	userRepo userRepository.UserRepository,
-// 	roleRepo roleRepository.RoleRepository,
-// ) {
-// 	attendance := router.Group("/api/attendances")
-// 	attendance.Use(middleware.AuthMiddleware())
-
-// 	{
-// 		attendance.POST("/check-in", attendanceHandler.CheckIn)
-// 		// attendance.POST("/:id/check-out", attendanceHandler.CheckOut)
-
-// 		attendance.POST("/check-out", attendanceHandler.CheckOut)
-
-// 		attendance.GET("/:id/check-in-photo", attendanceHandler.CheckInPhoto)
-// 		attendance.GET("/:id/check-out-photo", attendanceHandler.CheckOutPhoto)
-
-// 		// Admin-only attendance endpoints
-// 		// attendance.GET(
-// 		// 	"/paginated",
-// 		// 	middleware.AdminMiddleware(userRepo, roleRepo),
-// 		// 	attendanceHandler.FindAllPaginated,
-// 		// )
-
-// 		attendance.GET("/paginated", attendanceHandler.FindAllPaginated)
-
-// 		attendance.GET("/:id/check-in-detail", attendanceHandler.CheckInDetail)
-// 		attendance.GET("/:id/check-out-detail", attendanceHandler.CheckOutDetail)
-
-// 	}
-// }

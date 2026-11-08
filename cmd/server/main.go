@@ -41,6 +41,13 @@ import (
 	dailyActivityRoutes "be-presensi/internal/modules/daily_activity/routes"
 	dailyActivityService "be-presensi/internal/modules/daily_activity/service"
 
+	"be-presensi/internal/modules/notification/provider/whatsapp"
+	notificationRepository "be-presensi/internal/modules/notification/repository"
+	notificationService "be-presensi/internal/modules/notification/service"
+
+	notificationHandler "be-presensi/internal/modules/notification/handler"
+	notificationRoutes "be-presensi/internal/modules/notification/routes"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -68,7 +75,6 @@ func main() {
 	roleHdl := roleHandler.NewRoleHandler(roleSvc)
 
 	roleRoutes.RegisterRoleRoutes(api, roleHdl)
-	//roleRoutes.RegisterRoleRoutes(api, roleHdl, db)
 
 	// =========================
 	// Work Schedule Module
@@ -94,6 +100,27 @@ func main() {
 	userRepo := userRepository.NewUserRepository(db)
 
 	// =========================
+	// Notification Module
+	// =========================
+	whatsappLogRepo := notificationRepository.NewWhatsAppLogRepository(db)
+	whatsappConfigRepo := notificationRepository.NewWhatsAppConfigRepository(db)
+	whatsappClient := whatsapp.NewWhatsAppClient()
+
+	notificationSvc := notificationService.NewNotificationService(
+		whatsappConfigRepo,
+		whatsappLogRepo,
+		userRepo,
+		whatsappClient,
+	)
+
+	notificationHdl := notificationHandler.NewWhatsAppHandler(notificationSvc)
+
+	notificationRoutes.RegisterWhatsAppRoutes(
+		router,
+		notificationHdl,
+	)
+
+	// =========================
 	// Attendance Module
 	// =========================
 	attendanceRepo := attendanceRepository.NewAttendanceRepository(db)
@@ -108,9 +135,9 @@ func main() {
 		roleRepo,
 		workScheduleRepo,
 		schoolLocationRepo,
+		notificationSvc,
 	)
 
-	// attendanceHdl := attendanceHandler.NewAttendanceHandler(attendanceSvc)
 	attendanceHdl := attendanceHandler.NewAttendanceHandler(
 		attendanceSvc,
 		cfg.AppBaseURL,
@@ -149,8 +176,6 @@ func main() {
 	// =========================
 	// Auth Module
 	// =========================
-	//authSvc := authService.NewAuthService(userRepo)
-	// authSvc := authService.NewAuthService(userRepo, db)
 
 	authSvc := authService.NewAuthService(
 		userRepo,

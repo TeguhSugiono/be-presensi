@@ -18,6 +18,8 @@ type UserRepository interface {
 		limit int,
 		offset int,
 	) ([]*entity.User, int64, error)
+
+	FindActiveAdminPhoneNumbers() ([]string, error)
 }
 
 type userRepository struct {
@@ -160,4 +162,25 @@ func (r *userRepository) Create(user *entity.User) error {
 
 func (r *userRepository) Update(user *entity.User) error {
 	return r.db.Save(user).Error
+}
+
+func (r *userRepository) FindActiveAdminPhoneNumbers() ([]string, error) {
+	var phoneNumbers []string
+
+	err := r.db.
+		Table("users").
+		Select("users.phone_number").
+		Joins("INNER JOIN roles ON roles.id = users.role_id").
+		Where(
+			"roles.name = ? AND roles.is_deleted = ? AND users.is_active = ? AND users.is_deleted = ?",
+			"Admin",
+			false,
+			true,
+			false,
+		).
+		Where("users.phone_number IS NOT NULL").
+		Where("TRIM(users.phone_number) <> ''").
+		Pluck("users.phone_number", &phoneNumbers).Error
+
+	return phoneNumbers, err
 }

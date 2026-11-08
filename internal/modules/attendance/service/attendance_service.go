@@ -12,6 +12,7 @@ import (
 	attendanceEntity "be-presensi/internal/modules/attendance/entity"
 	attendanceRepository "be-presensi/internal/modules/attendance/repository"
 	dailyActivityRepository "be-presensi/internal/modules/daily_activity/repository"
+	notificationService "be-presensi/internal/modules/notification/service"
 	roleRepository "be-presensi/internal/modules/role/repository"
 	schoolLocationRepository "be-presensi/internal/modules/school_location/repository"
 	userRepository "be-presensi/internal/modules/user/repository"
@@ -38,14 +39,35 @@ var (
 )
 
 type AttendanceService struct {
-	db                 *gorm.DB
-	attendanceRepo     attendanceRepository.AttendanceRepository
-	dailyActivityRepo  dailyActivityRepository.DailyActivityRepository
-	userRepo           userRepository.UserRepository
-	roleRepo           roleRepository.RoleRepository
-	workScheduleRepo   workScheduleRepository.WorkScheduleRepository
-	schoolLocationRepo schoolLocationRepository.SchoolLocationRepository
+	db                  *gorm.DB
+	attendanceRepo      attendanceRepository.AttendanceRepository
+	dailyActivityRepo   dailyActivityRepository.DailyActivityRepository
+	userRepo            userRepository.UserRepository
+	roleRepo            roleRepository.RoleRepository
+	workScheduleRepo    workScheduleRepository.WorkScheduleRepository
+	schoolLocationRepo  schoolLocationRepository.SchoolLocationRepository
+	notificationService notificationService.NotificationService
 }
+
+// func NewAttendanceService(
+// 	db *gorm.DB,
+// 	attendanceRepo attendanceRepository.AttendanceRepository,
+// 	dailyActivityRepo dailyActivityRepository.DailyActivityRepository,
+// 	userRepo userRepository.UserRepository,
+// 	roleRepo roleRepository.RoleRepository,
+// 	workScheduleRepo workScheduleRepository.WorkScheduleRepository,
+// 	schoolLocationRepo schoolLocationRepository.SchoolLocationRepository,
+// ) *AttendanceService {
+// 	return &AttendanceService{
+// 		db:                 db,
+// 		attendanceRepo:     attendanceRepo,
+// 		dailyActivityRepo:  dailyActivityRepo,
+// 		userRepo:           userRepo,
+// 		roleRepo:           roleRepo,
+// 		workScheduleRepo:   workScheduleRepo,
+// 		schoolLocationRepo: schoolLocationRepo,
+// 	}
+// }
 
 func NewAttendanceService(
 	db *gorm.DB,
@@ -55,15 +77,17 @@ func NewAttendanceService(
 	roleRepo roleRepository.RoleRepository,
 	workScheduleRepo workScheduleRepository.WorkScheduleRepository,
 	schoolLocationRepo schoolLocationRepository.SchoolLocationRepository,
+	notificationService notificationService.NotificationService,
 ) *AttendanceService {
 	return &AttendanceService{
-		db:                 db,
-		attendanceRepo:     attendanceRepo,
-		dailyActivityRepo:  dailyActivityRepo,
-		userRepo:           userRepo,
-		roleRepo:           roleRepo,
-		workScheduleRepo:   workScheduleRepo,
-		schoolLocationRepo: schoolLocationRepo,
+		db:                  db,
+		attendanceRepo:      attendanceRepo,
+		dailyActivityRepo:   dailyActivityRepo,
+		userRepo:            userRepo,
+		roleRepo:            roleRepo,
+		workScheduleRepo:    workScheduleRepo,
+		schoolLocationRepo:  schoolLocationRepo,
+		notificationService: notificationService,
 	}
 }
 
@@ -71,9 +95,10 @@ func (s *AttendanceService) FindAllPaginated(
 	ctx context.Context,
 	userID int64,
 	search string,
+	date *time.Time,
 	page int,
 	perPage int,
-) ([]*attendanceEntity.Attendance, int64, error) {
+) ([]*attendanceRepository.AttendanceListItem, int64, error) {
 	if userID <= 0 {
 		return nil, 0, ErrAttendanceUserNotFound
 	}
@@ -90,12 +115,8 @@ func (s *AttendanceService) FindAllPaginated(
 		perPage = 100
 	}
 
-	// Validasi user yang sedang login.
 	user, err := s.userRepo.FindByID(userID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, 0, ErrAttendanceUserNotFound
-		}
 		return nil, 0, err
 	}
 
@@ -103,24 +124,16 @@ func (s *AttendanceService) FindAllPaginated(
 		return nil, 0, ErrAttendanceUserNotFound
 	}
 
-	// Tentukan role user.
 	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, 0, ErrAttendanceRoleNotFound
-		}
 		return nil, 0, err
 	}
 
 	if role == nil || role.IsDeleted {
-		return nil, 0, ErrAttendanceRoleNotFound
+		return nil, 0, ErrAttendanceUserNotFound
 	}
 
-	isAdmin := strings.EqualFold(
-		strings.TrimSpace(role.Name),
-		"Admin",
-	)
-
+	isAdmin := strings.EqualFold(strings.TrimSpace(role.Name), "Admin")
 	offset := (page - 1) * perPage
 
 	return s.attendanceRepo.FindAllPaginated(
@@ -128,10 +141,77 @@ func (s *AttendanceService) FindAllPaginated(
 		userID,
 		isAdmin,
 		strings.TrimSpace(search),
+		date,
 		perPage,
 		offset,
 	)
 }
+
+// func (s *AttendanceService) FindAllPaginated(
+// 	ctx context.Context,
+// 	userID int64,
+// 	search string,
+// 	page int,
+// 	perPage int,
+// ) ([]*attendanceEntity.Attendance, int64, error) {
+// 	if userID <= 0 {
+// 		return nil, 0, ErrAttendanceUserNotFound
+// 	}
+
+// 	if page < 1 {
+// 		page = 1
+// 	}
+
+// 	if perPage < 1 {
+// 		perPage = 10
+// 	}
+
+// 	if perPage > 100 {
+// 		perPage = 100
+// 	}
+
+// 	// Validasi user yang sedang login.
+// 	user, err := s.userRepo.FindByID(userID)
+// 	if err != nil {
+// 		if errors.Is(err, gorm.ErrRecordNotFound) {
+// 			return nil, 0, ErrAttendanceUserNotFound
+// 		}
+// 		return nil, 0, err
+// 	}
+
+// 	if user == nil || !user.IsActive || user.IsDeleted {
+// 		return nil, 0, ErrAttendanceUserNotFound
+// 	}
+
+// 	// Tentukan role user.
+// 	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
+// 	if err != nil {
+// 		if errors.Is(err, gorm.ErrRecordNotFound) {
+// 			return nil, 0, ErrAttendanceRoleNotFound
+// 		}
+// 		return nil, 0, err
+// 	}
+
+// 	if role == nil || role.IsDeleted {
+// 		return nil, 0, ErrAttendanceRoleNotFound
+// 	}
+
+// 	isAdmin := strings.EqualFold(
+// 		strings.TrimSpace(role.Name),
+// 		"Admin",
+// 	)
+
+// 	offset := (page - 1) * perPage
+
+// 	return s.attendanceRepo.FindAllPaginated(
+// 		ctx,
+// 		userID,
+// 		isAdmin,
+// 		strings.TrimSpace(search),
+// 		perPage,
+// 		offset,
+// 	)
+// }
 
 func (s *AttendanceService) GetAttendancePhoto(
 	ctx context.Context,
@@ -497,6 +577,35 @@ func (s *AttendanceService) CheckOut(
 
 	// Any WhatsApp notification for out-of-area check-outs should be sent
 	// after the transaction commits, through a notifier integration.
+	// Send WhatsApp notification after transaction successfully commits.
+	if updatedAttendance.IsOutOfArea {
+		message := fmt.Sprintf(
+			"⚠️ NOTIFIKASI CHECKOUT DI LUAR AREA SEKOLAH\n\n"+
+				"Nama: %s\n"+
+				"Tanggal: %s\n"+
+				"Waktu Checkout: %s\n"+
+				"Lokasi: https://www.google.com/maps?q=%f,%f\n"+
+				"Keterangan: %s\n\n"+
+				"Notifikasi otomatis dari Sistem Presensi.",
+			user.FullName,
+			attendanceDate.Format("02-01-2006"),
+			clientTime.Format("15:04:05"),
+			*updatedAttendance.CheckOutLat,
+			*updatedAttendance.CheckOutLng,
+			*updatedAttendance.OutOfAreaNote,
+		)
+
+		if err := s.notificationService.SendWhatsAppToAdmins(
+			ctx,
+			updatedAttendance.ID,
+			userID,
+			message,
+		); err != nil {
+			// Notification failure must not affect successful checkout.
+		}
+
+	}
+
 	return updatedAttendance, nil
 }
 
@@ -697,4 +806,22 @@ func (s *AttendanceService) GetTodayAttendance(
 	}
 
 	return attendance, nil
+}
+
+func (s *AttendanceService) GetSummary(
+	ctx context.Context,
+	date time.Time,
+) (*dto.AttendanceSummaryResponse, error) {
+	summary, err := s.attendanceRepo.GetSummary(ctx, date)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.AttendanceSummaryResponse{
+		Date:        date.Format("2006-01-02"),
+		TotalUsers:  summary.TotalUsers,
+		ClockIn:     summary.ClockIn,
+		ClockOut:    summary.ClockOut,
+		NotAttended: summary.NotAttended,
+	}, nil
 }

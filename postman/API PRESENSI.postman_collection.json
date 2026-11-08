@@ -423,7 +423,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"email\": \"teguh@gmail.com\",\r\n//     \"password\": \"teguh12345\"\r\n// }\r\n\r\n\r\n{\r\n    \"email\": \"wiro@gmail.com\",\r\n    \"password\": \"987654321\"\r\n}\r\n\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"jaenudin@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }",
+              "raw": "{\r\n    \"email\": \"teguh@gmail.com\",\r\n    \"password\": \"teguh12345\"\r\n}\r\n\r\n\r\n// {\r\n//     \"email\": \"wiro@gmail.com\",\r\n//     \"password\": \"987654321\"\r\n// }\r\n\r\n\r\n// {\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"jaenudin@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }\r\n\r\n// {\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\"\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -572,7 +572,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyNDEzMzU4LCJpYXQiOjE3OTIzMjY5NTh9.MSql0_z5yseB8R2MP7AY5xxAFmK4U3hss9CPv25cXsw",
+                  "value": "{{json_web_token_0c85}}",
                   "type": "string"
                 }
               ]
@@ -581,7 +581,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n// {\r\n//   \"role_id\": 3,\r\n//   \"work_schedule_id\": 2,\r\n//   \"nip\": \"432432432\",\r\n//   \"full_name\": \"Yulianti\",\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\",\r\n//   \"phone_number\": \"23232323232323\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n// {\r\n//   \"role_id\": 2,\r\n//   \"work_schedule_id\": 1,\r\n//   \"nip\": \"34534545\",\r\n//   \"full_name\": \"Jaka tingkir\",\r\n//   \"email\": \"jaka@gmail.com\",\r\n//   \"password\": \"jakatingkir\",\r\n//   \"phone_number\": \"2423423344\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n\r\n{\r\n  \"role_id\": 3,\r\n  \"work_schedule_id\": 2,\r\n  \"nip\": \"67666666\",\r\n  \"full_name\": \"Wiro Sableng\",\r\n  \"email\": \"wiro@gmail.com\",\r\n  \"password\": \"987654321\",\r\n  \"phone_number\": \"1133557799\",\r\n  \"is_active\": true\r\n}",
+              "raw": "// {\r\n//     \"role_id\": 2,\r\n//     \"work_schedule_id\": 1,\r\n//     \"nip\": \"222222222\",\r\n//     \"full_name\": \"Staff Sekolah\",\r\n//     \"email\": \"staff@gmail.com\",\r\n//     \"password\": \"87654345\",\r\n//     \"phone_number\": \"466767\",\r\n//     \"is_active\": true\r\n// }\r\n\r\n\r\n// {\r\n//   \"role_id\": 3,\r\n//   \"work_schedule_id\": 2,\r\n//   \"nip\": \"432432432\",\r\n//   \"full_name\": \"Yulianti\",\r\n//   \"email\": \"yulianti@gmail.com\",\r\n//   \"password\": \"12345678\",\r\n//   \"phone_number\": \"23232323232323\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n// {\r\n//   \"role_id\": 2,\r\n//   \"work_schedule_id\": 1,\r\n//   \"nip\": \"34534545\",\r\n//   \"full_name\": \"Jaka tingkir\",\r\n//   \"email\": \"jaka@gmail.com\",\r\n//   \"password\": \"jakatingkir\",\r\n//   \"phone_number\": \"2423423344\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n\r\n// {\r\n//   \"role_id\": 3,\r\n//   \"work_schedule_id\": 2,\r\n//   \"nip\": \"67666666\",\r\n//   \"full_name\": \"Wiro Sableng\",\r\n//   \"email\": \"wiro@gmail.com\",\r\n//   \"password\": \"987654321\",\r\n//   \"phone_number\": \"1133557799\",\r\n//   \"is_active\": true\r\n// }\r\n\r\n\r\n{\r\n  \"role_id\": 1,\r\n  \"work_schedule_id\": null,\r\n  \"nip\": \"88888888\",\r\n  \"full_name\": \"Shulhan\",\r\n  \"email\": \"shulhan@gmail.com\",\r\n  \"password\": \"shulhan123\",\r\n  \"phone_number\": \"083871467022\",\r\n  \"is_active\": true\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -930,7 +930,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_15mp}}",
+                  "value": "{{json_web_token_09q9}}",
                   "type": "string"
                 }
               ]
@@ -942,12 +942,12 @@
               "formdata": [
                 {
                   "key": "check_in_date",
-                  "value": "2026-10-31",
+                  "value": "2026-11-08",
                   "type": "text"
                 },
                 {
                   "key": "check_in_time",
-                  "value": "09:13:00",
+                  "value": "06:23:00",
                   "type": "text"
                 },
                 {
@@ -998,7 +998,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0z3i}}",
+                  "value": "{{json_web_token_09q9}}",
                   "type": "string"
                 }
               ]
@@ -1010,12 +1010,12 @@
               "formdata": [
                 {
                   "key": "check_out_date",
-                  "value": "2026-10-31",
+                  "value": "2026-11-08",
                   "type": "text"
                 },
                 {
                   "key": "check_out_time",
-                  "value": "09:14:00",
+                  "value": "06:13:00",
                   "type": "text"
                 },
                 {
@@ -1027,18 +1027,19 @@
                 },
                 {
                   "key": "check_out_lat",
-                  "value": "-6.3",
+                  "value": "-6.306500",
                   "type": "text"
                 },
                 {
                   "key": "check_out_lng",
-                  "value": "107.3",
+                  "value": "107.172900",
                   "type": "text"
                 },
                 {
                   "key": "out_of_area_note",
                   "value": "Cek Out Diluar Area",
-                  "type": "text"
+                  "type": "text",
+                  "disabled": true
                 },
                 {
                   "key": "keterangan_out",
@@ -1071,7 +1072,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_15mp}}",
+                  "value": "{{json_web_token_0cvz}}",
                   "type": "string"
                 }
               ]
@@ -1079,7 +1080,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/api/attendances/paginated?page=1&per_page=10",
+              "raw": "http://localhost:8080/api/attendances/paginated?page=1&per_page=10&date=2026-11-08",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1092,17 +1093,21 @@
               ],
               "query": [
                 {
-                  "key": "search",
-                  "value": "yul",
-                  "disabled": true
-                },
-                {
                   "key": "page",
                   "value": "1"
                 },
                 {
                   "key": "per_page",
                   "value": "10"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-11-08"
+                },
+                {
+                  "key": "search",
+                  "value": "Testzz",
+                  "disabled": true
                 }
               ]
             }
@@ -1291,6 +1296,43 @@
                 "api",
                 "attendances",
                 "today"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Summary Attendance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0wtb}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/summary?date=2026-11-08",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "summary"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-11-08"
+                }
               ]
             }
           },
@@ -1553,7 +1595,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_13ib}}",
+                  "value": "{{json_web_token_09q9}}",
                   "type": "string"
                 }
               ]
@@ -1562,7 +1604,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//     //\"activity_date\": \"2026-10-31\",\r\n//     \"description\": \"Wito Menyelesaikan pekerjaan update\",\r\n//     \"action\": \"draft\"\r\n// }\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n\r\n{\r\n  //\"activity_date\": \"2026-10-31\",\r\n  \"description\": \"TEST DRAFT TO SUBMIT Wito Menyelesaikan pekerjaan\",\r\n  \"action\": \"submit\"\r\n}",
+              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//     //\"activity_date\": \"2026-10-31\",\r\n//     \"description\": \"Pak Jaenudin Menyelesaikan pekerjaan update\",\r\n//     \"action\": \"draft\"\r\n// }\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n\r\n{\r\n  //\"activity_date\": \"2026-10-31\",\r\n  \"description\": \"TEST DRAFT TO SUBMIT Wito Menyelesaikan pekerjaan ak Jaenudin Menyelesaikan pekerjaan update\",\r\n  \"action\": \"submit\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1580,6 +1622,52 @@
                 "api",
                 "daily-activities",
                 "upsert"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "WhatsApp",
+      "item": [
+        {
+          "name": "Test Send",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0pgo}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"target\": \"082297897120\",\r\n  \"message\": \"Testing WhatsApp fallback versi terbaru.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/notifications/whatsapp/test",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "notifications",
+                "whatsapp",
+                "test"
               ]
             }
           },
@@ -1641,6 +1729,46 @@
     },
     {
       "key": "json_web_token_15mp",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0pgo",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0sq2",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_09q9",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0j61",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0ya1",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0vr7",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0bxd",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0cvz",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0wtb",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0c85",
       "secret": true
     }
   ]

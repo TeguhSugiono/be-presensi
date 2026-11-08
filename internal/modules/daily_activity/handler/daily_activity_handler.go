@@ -213,7 +213,14 @@ func (h *DailyActivityHandler) handleError(
 		response.Error(c, http.StatusBadRequest, err.Error())
 
 	case errors.Is(err, gorm.ErrRecordNotFound):
-		response.Error(c, http.StatusNotFound, "daily activity not found")
+		//response.Error(c, http.StatusNotFound, "daily activity not found")
+
+		response.Success(
+			c,
+			http.StatusOK,
+			"daily activity not found",
+			[]interface{}{},
+		)
 
 	case errors.Is(err, service.ErrCheckInRequired):
 		response.Error(

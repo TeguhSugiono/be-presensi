@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"be-presensi/internal/modules/attendance/dto"
 	"be-presensi/internal/modules/attendance/service"
@@ -18,18 +19,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-// type AttendanceHandler struct {
-// 	attendanceService *service.AttendanceService
-// }
-
-// func NewAttendanceHandler(
-// 	attendanceService *service.AttendanceService,
-// ) *AttendanceHandler {
-// 	return &AttendanceHandler{
-// 		attendanceService: attendanceService,
-// 	}
-// }
 
 type AttendanceHandler struct {
 	attendanceService *service.AttendanceService
@@ -251,8 +240,8 @@ func (h *AttendanceHandler) serveAttendancePhoto(
 
 // FindAllPaginated godoc
 // GET /api/attendances/paginated?page=1&per_page=10&search=
-func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 
+func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 	userID, ok := middleware.GetUserID(c)
 	if !ok || userID <= 0 {
 		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
@@ -277,21 +266,42 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 
 	search := strings.TrimSpace(c.Query("search"))
 
-	// attendances, total, err := h.attendanceService.FindAllPaginated(
-	// 	c.Request.Context(),
-	// 	search,
-	// 	page,
-	// 	perPage,
-	// )
+	// Optional date filter.
+	var date *time.Time
+
+	dateParam := strings.TrimSpace(c.Query("date"))
+
+	if dateParam != "" {
+		loc, err := time.LoadLocation("Asia/Jakarta")
+		if err != nil {
+			loc = time.FixedZone("WIB", 7*60*60)
+		}
+
+		parsedDate, err := time.ParseInLocation(
+			"2006-01-02",
+			dateParam,
+			loc,
+		)
+		if err != nil {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"invalid date format, use YYYY-MM-DD",
+			)
+			return
+		}
+
+		date = &parsedDate
+	}
 
 	attendances, total, err := h.attendanceService.FindAllPaginated(
 		c.Request.Context(),
 		userID,
 		search,
+		date,
 		page,
 		perPage,
 	)
-
 	if err != nil {
 		c.Error(err)
 		response.Error(
@@ -302,35 +312,93 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 		return
 	}
 
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		loc = time.FixedZone("WIB", 7*60*60)
+	}
+
+	emptyString := ""
+
 	data := make([]dto.AttendanceListResponse, 0, len(attendances))
 
 	for _, attendance := range attendances {
-		item := dto.ToAttendanceResponse(attendance)
-
-		data = append(data, dto.AttendanceListResponse{
-			ID:                 item.ID,
-			UserID:             item.UserID,
+		item := dto.AttendanceListResponse{
+			ID: attendance.ID,
+			// UserName:           &attendance.UserName,
 			UserName:           attendance.UserName,
-			AttendanceDate:     item.AttendanceDate,
-			ScheduledStartTime: item.ScheduledStartTime,
-			ScheduledEndTime:   item.ScheduledEndTime,
-			CheckInTime:        item.CheckInTime,
-			CheckInPhoto:       item.CheckInPhoto,
-			CheckInLat:         item.CheckInLat,
-			CheckInLng:         item.CheckInLng,
-			KeteranganIn:       item.KeteranganIn,
+			ScheduledStartTime: attendance.ScheduledStartTime,
+			ScheduledEndTime:   attendance.ScheduledEndTime,
 
-			IsLate:        item.IsLate,
-			CheckOutTime:  item.CheckOutTime,
-			CheckOutPhoto: item.CheckOutPhoto,
-			CheckOutLat:   item.CheckOutLat,
-			CheckOutLng:   item.CheckOutLng,
-			KeteranganOut: item.KeteranganOut,
-			IsOutOfArea:   item.IsOutOfArea,
-			OutOfAreaNote: item.OutOfAreaNote,
-			CreatedAt:     item.CreatedAt,
-			UpdatedAt:     item.UpdatedAt,
-		})
+			CheckInPhoto:  &emptyString,
+			KeteranganIn:  &emptyString,
+			CheckOutPhoto: &emptyString,
+			KeteranganOut: &emptyString,
+			OutOfAreaNote: &emptyString,
+		}
+
+		// User ID.
+		item.UserID = attendance.UserID
+
+		// Attendance date.
+		if attendance.AttendanceDate != nil {
+			value := attendance.AttendanceDate.In(loc).Format("2006-01-02")
+			item.AttendanceDate = &value
+		}
+
+		// Check-in information.
+		if attendance.CheckInTime != nil {
+			value := attendance.CheckInTime.In(loc).Format("2006-01-02 15:04:05")
+			item.CheckInTime = &value
+		}
+
+		if attendance.CheckInPhoto != nil {
+			item.CheckInPhoto = attendance.CheckInPhoto
+		}
+
+		item.CheckInLat = attendance.CheckInLat
+		item.CheckInLng = attendance.CheckInLng
+
+		if attendance.KeteranganIn != nil {
+			item.KeteranganIn = attendance.KeteranganIn
+		}
+
+		item.IsLate = attendance.IsLate
+
+		// Check-out information.
+		if attendance.CheckOutTime != nil {
+			value := attendance.CheckOutTime.In(loc).Format("2006-01-02 15:04:05")
+			item.CheckOutTime = &value
+		}
+
+		if attendance.CheckOutPhoto != nil {
+			item.CheckOutPhoto = attendance.CheckOutPhoto
+		}
+
+		item.CheckOutLat = attendance.CheckOutLat
+		item.CheckOutLng = attendance.CheckOutLng
+
+		if attendance.KeteranganOut != nil {
+			item.KeteranganOut = attendance.KeteranganOut
+		}
+
+		item.IsOutOfArea = attendance.IsOutOfArea
+
+		if attendance.OutOfAreaNote != nil {
+			item.OutOfAreaNote = attendance.OutOfAreaNote
+		}
+
+		// Audit information.
+		if attendance.CreatedAt != nil {
+			value := attendance.CreatedAt.In(loc).Format("2006-01-02 15:04:05")
+			item.CreatedAt = &value
+		}
+
+		if attendance.UpdatedAt != nil {
+			value := attendance.UpdatedAt.In(loc).Format("2006-01-02 15:04:05")
+			item.UpdatedAt = &value
+		}
+
+		data = append(data, item)
 	}
 
 	response.Success(
@@ -571,5 +639,63 @@ func (h *AttendanceHandler) GetTodayAttendance(c *gin.Context) {
 		http.StatusOK,
 		"attendance detail retrieved successfully",
 		dto.ToAttendanceTodayResponse(attendance, h.appBaseURL),
+	)
+}
+
+func (h *AttendanceHandler) GetSummary(c *gin.Context) {
+	userID, ok := middleware.GetUserID(c)
+	if !ok || userID <= 0 {
+		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
+		return
+	}
+
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		loc = time.FixedZone("WIB", 7*60*60)
+	}
+
+	dateParam := strings.TrimSpace(c.Query("date"))
+
+	var date time.Time
+
+	if dateParam == "" {
+		date = time.Now().In(loc)
+	} else {
+		parsedDate, err := time.ParseInLocation(
+			"2006-01-02",
+			dateParam,
+			loc,
+		)
+		if err != nil {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"invalid date format, use YYYY-MM-DD",
+			)
+			return
+		}
+
+		date = parsedDate
+	}
+
+	summary, err := h.attendanceService.GetSummary(
+		c.Request.Context(),
+		date,
+	)
+	if err != nil {
+		c.Error(err)
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to retrieve attendance summary",
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		http.StatusOK,
+		"attendance summary retrieved successfully",
+		summary,
 	)
 }
