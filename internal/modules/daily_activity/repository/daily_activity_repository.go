@@ -56,6 +56,11 @@ type DailyActivityRepository interface {
 		userID int64,
 		activityDate time.Time,
 	) (*entity.DailyActivity, error)
+
+	FindByID(
+		ctx context.Context,
+		id int64,
+	) (*entity.DailyActivity, error)
 }
 
 type dailyActivityRepository struct {
@@ -266,6 +271,27 @@ func (r *dailyActivityRepository) FindByUserAndDateForUpdate(
 			"user_id = ? AND activity_date = ? AND is_deleted = ?",
 			userID,
 			activityDate.Format("2006-01-02"),
+			false,
+		).
+		First(&activity).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &activity, nil
+}
+
+func (r *dailyActivityRepository) FindByID(
+	ctx context.Context,
+	id int64,
+) (*entity.DailyActivity, error) {
+	var activity entity.DailyActivity
+
+	err := r.db.WithContext(ctx).
+		Where(
+			"id = ? AND is_deleted = ?",
+			id,
 			false,
 		).
 		First(&activity).Error

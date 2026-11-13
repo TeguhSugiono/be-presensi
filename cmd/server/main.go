@@ -48,6 +48,11 @@ import (
 	notificationHandler "be-presensi/internal/modules/notification/handler"
 	notificationRoutes "be-presensi/internal/modules/notification/routes"
 
+	activityCommentHandler "be-presensi/internal/modules/activity_comment/handler"
+	activityCommentRepository "be-presensi/internal/modules/activity_comment/repository"
+	activityCommentRoutes "be-presensi/internal/modules/activity_comment/routes"
+	activityCommentService "be-presensi/internal/modules/activity_comment/service"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -173,6 +178,32 @@ func main() {
 	userSvc := userService.NewUserService(userRepo, db)
 	userHdl := userHandler.NewUserHandler(userSvc)
 
+	// =========================
+	// Activity Comment Module
+	// =========================
+	// =========================
+	// Activity Comment Module
+	// =========================
+	activityCommentRepo := activityCommentRepository.NewActivityCommentRepository(db)
+
+	activityCommentSvc := activityCommentService.NewActivityCommentService(
+		cfg,
+		activityCommentRepo,
+		dailyActivityRepo,
+		userRepo,
+		notificationSvc,
+	)
+
+	activityCommentHdl := activityCommentHandler.NewActivityCommentHandler(
+		activityCommentSvc,
+	)
+
+	activityCommentRoutes.RegisterActivityCommentRoutes(
+		router,
+		activityCommentHdl,
+		userRepo,
+		roleRepo,
+	)
 	// =========================
 	// Auth Module
 	// =========================

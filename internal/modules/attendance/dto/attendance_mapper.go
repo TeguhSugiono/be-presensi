@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"strconv"
+	"strings"
 	"time"
 
 	"be-presensi/internal/modules/attendance/entity"
@@ -14,6 +16,7 @@ const (
 
 func ToAttendanceResponse(
 	attendance *entity.Attendance,
+	appBaseURL string,
 ) *AttendanceResponse {
 	if attendance == nil {
 		return nil
@@ -24,18 +27,38 @@ func ToAttendanceResponse(
 		loc = time.FixedZone("WIB", 7*60*60)
 	}
 
+	baseURL := strings.TrimRight(appBaseURL, "/")
+
+	checkInPhotoURL := ""
+	if attendance.CheckInPhoto != "" {
+		checkInPhotoURL = baseURL +
+			"/api/attendances/" +
+			strconv.FormatInt(attendance.ID, 10) +
+			"/check-in-photo"
+	}
+
+	var checkOutPhotoURL *string
+	if attendance.CheckOutPhoto != nil && *attendance.CheckOutPhoto != "" {
+		value := baseURL +
+			"/api/attendances/" +
+			strconv.FormatInt(attendance.ID, 10) +
+			"/check-out-photo"
+
+		checkOutPhotoURL = &value
+	}
+
 	response := &AttendanceResponse{
 		ID:             attendance.ID,
 		UserID:         attendance.UserID,
 		AttendanceDate: attendance.AttendanceDate.In(loc).Format(dateFormat),
 		CheckInTime:    attendance.CheckInTime.In(loc).Format(dateTimeFormat),
-		CheckInPhoto:   attendance.CheckInPhoto,
+		CheckInPhoto:   checkInPhotoURL,
 		CheckInLat:     attendance.CheckInLat,
 		CheckInLng:     attendance.CheckInLng,
 		KeteranganIn:   attendance.KeteranganIn,
 
 		IsLate:        attendance.IsLate,
-		CheckOutPhoto: attendance.CheckOutPhoto,
+		CheckOutPhoto: checkOutPhotoURL,
 		CheckOutLat:   attendance.CheckOutLat,
 		CheckOutLng:   attendance.CheckOutLng,
 		KeteranganOut: attendance.KeteranganOut,
@@ -66,6 +89,61 @@ func ToAttendanceResponse(
 
 	return response
 }
+
+// func ToAttendanceResponse(
+// 	attendance *entity.Attendance,
+// ) *AttendanceResponse {
+// 	if attendance == nil {
+// 		return nil
+// 	}
+
+// 	loc, err := time.LoadLocation("Asia/Jakarta")
+// 	if err != nil {
+// 		loc = time.FixedZone("WIB", 7*60*60)
+// 	}
+
+// 	response := &AttendanceResponse{
+// 		ID:             attendance.ID,
+// 		UserID:         attendance.UserID,
+// 		AttendanceDate: attendance.AttendanceDate.In(loc).Format(dateFormat),
+// 		CheckInTime:    attendance.CheckInTime.In(loc).Format(dateTimeFormat),
+// 		CheckInPhoto:   attendance.CheckInPhoto,
+// 		CheckInLat:     attendance.CheckInLat,
+// 		CheckInLng:     attendance.CheckInLng,
+// 		KeteranganIn:   attendance.KeteranganIn,
+
+// 		IsLate:        attendance.IsLate,
+// 		CheckOutPhoto: attendance.CheckOutPhoto,
+// 		CheckOutLat:   attendance.CheckOutLat,
+// 		CheckOutLng:   attendance.CheckOutLng,
+// 		KeteranganOut: attendance.KeteranganOut,
+// 		IsOutOfArea:   attendance.IsOutOfArea,
+// 		OutOfAreaNote: attendance.OutOfAreaNote,
+// 		CreatedAt:     attendance.CreatedAt.In(loc).Format(dateTimeFormat),
+// 	}
+
+// 	if attendance.ScheduledStartTime != nil {
+// 		value := formatScheduleTime(*attendance.ScheduledStartTime)
+// 		response.ScheduledStartTime = &value
+// 	}
+
+// 	if attendance.ScheduledEndTime != nil {
+// 		value := formatScheduleTime(*attendance.ScheduledEndTime)
+// 		response.ScheduledEndTime = &value
+// 	}
+
+// 	if attendance.CheckOutTime != nil {
+// 		value := attendance.CheckOutTime.In(loc).Format(dateTimeFormat)
+// 		response.CheckOutTime = &value
+// 	}
+
+// 	if attendance.UpdatedAt != nil {
+// 		value := attendance.UpdatedAt.In(loc).Format(dateTimeFormat)
+// 		response.UpdatedAt = &value
+// 	}
+
+// 	return response
+// }
 
 func formatScheduleTime(value string) string {
 	parsed, err := time.Parse("15:04:05", value)

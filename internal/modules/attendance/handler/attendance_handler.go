@@ -82,7 +82,8 @@ func (h *AttendanceHandler) CheckIn(c *gin.Context) {
 		c,
 		http.StatusCreated,
 		"check-in successful",
-		dto.ToAttendanceResponse(attendance),
+		//dto.ToAttendanceResponse(attendance),
+		dto.ToAttendanceResponse(attendance, h.appBaseURL),
 	)
 }
 
@@ -139,7 +140,8 @@ func (h *AttendanceHandler) CheckOut(c *gin.Context) {
 		c,
 		http.StatusOK,
 		"check-out successful",
-		dto.ToAttendanceResponse(attendance),
+		//dto.ToAttendanceResponse(attendance),
+		dto.ToAttendanceResponse(attendance, h.appBaseURL),
 	)
 }
 
@@ -267,41 +269,116 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 	search := strings.TrimSpace(c.Query("search"))
 
 	// Optional date filter.
-	var date *time.Time
+	// var date *time.Time
 
-	dateParam := strings.TrimSpace(c.Query("date"))
+	// dateParam := strings.TrimSpace(c.Query("date"))
 
-	if dateParam != "" {
+	// if dateParam != "" {
+	// 	loc, err := time.LoadLocation("Asia/Jakarta")
+	// 	if err != nil {
+	// 		loc = time.FixedZone("WIB", 7*60*60)
+	// 	}
+
+	// 	parsedDate, err := time.ParseInLocation(
+	// 		"2006-01-02",
+	// 		dateParam,
+	// 		loc,
+	// 	)
+	// 	if err != nil {
+	// 		response.Error(
+	// 			c,
+	// 			http.StatusBadRequest,
+	// 			"invalid date format, use YYYY-MM-DD",
+	// 		)
+	// 		return
+	// 	}
+
+	// 	date = &parsedDate
+	// }
+
+	// Optional date range filter.
+	dateStartParam := strings.TrimSpace(c.Query("date_start"))
+	dateEndParam := strings.TrimSpace(c.Query("date_end"))
+
+	// Kedua parameter harus diisi bersama.
+	if (dateStartParam == "") != (dateEndParam == "") {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"date_start and date_end must be provided together",
+		)
+		return
+	}
+
+	var dateStart *time.Time
+	var dateEnd *time.Time
+
+	if dateStartParam != "" {
 		loc, err := time.LoadLocation("Asia/Jakarta")
 		if err != nil {
 			loc = time.FixedZone("WIB", 7*60*60)
 		}
 
-		parsedDate, err := time.ParseInLocation(
+		parsedStart, err := time.ParseInLocation(
 			"2006-01-02",
-			dateParam,
+			dateStartParam,
 			loc,
 		)
 		if err != nil {
 			response.Error(
 				c,
 				http.StatusBadRequest,
-				"invalid date format, use YYYY-MM-DD",
+				"invalid date_start format, use YYYY-MM-DD",
 			)
 			return
 		}
 
-		date = &parsedDate
+		parsedEnd, err := time.ParseInLocation(
+			"2006-01-02",
+			dateEndParam,
+			loc,
+		)
+		if err != nil {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"invalid date_end format, use YYYY-MM-DD",
+			)
+			return
+		}
+
+		if parsedStart.After(parsedEnd) {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"date_start must be less than or equal to date_end",
+			)
+			return
+		}
+
+		dateStart = &parsedStart
+		dateEnd = &parsedEnd
 	}
+
+	// attendances, total, err := h.attendanceService.FindAllPaginated(
+	// 	c.Request.Context(),
+	// 	userID,
+	// 	search,
+	// 	date,
+	// 	page,
+	// 	perPage,
+	// )
 
 	attendances, total, err := h.attendanceService.FindAllPaginated(
 		c.Request.Context(),
 		userID,
 		search,
-		date,
+		dateStart,
+		dateEnd,
 		page,
 		perPage,
 	)
+
 	if err != nil {
 		c.Error(err)
 		response.Error(
@@ -351,8 +428,19 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 			item.CheckInTime = &value
 		}
 
-		if attendance.CheckInPhoto != nil {
-			item.CheckInPhoto = attendance.CheckInPhoto
+		// if attendance.CheckInPhoto != nil {
+		// 	item.CheckInPhoto = attendance.CheckInPhoto
+		// }
+
+		if attendance.CheckInPhoto != nil &&
+			attendance.ID != nil &&
+			*attendance.ID > 0 {
+			photoURL := h.appBaseURL +
+				"/api/attendances/" +
+				strconv.FormatInt(*attendance.ID, 10) +
+				"/check-in-photo"
+
+			item.CheckInPhoto = &photoURL
 		}
 
 		item.CheckInLat = attendance.CheckInLat
@@ -370,8 +458,19 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 			item.CheckOutTime = &value
 		}
 
-		if attendance.CheckOutPhoto != nil {
-			item.CheckOutPhoto = attendance.CheckOutPhoto
+		// if attendance.CheckOutPhoto != nil {
+		// 	item.CheckOutPhoto = attendance.CheckOutPhoto
+		// }
+
+		if attendance.CheckOutPhoto != nil &&
+			attendance.ID != nil &&
+			*attendance.ID > 0 {
+			photoURL := h.appBaseURL +
+				"/api/attendances/" +
+				strconv.FormatInt(*attendance.ID, 10) +
+				"/check-out-photo"
+
+			item.CheckOutPhoto = &photoURL
 		}
 
 		item.CheckOutLat = attendance.CheckOutLat

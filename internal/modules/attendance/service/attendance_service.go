@@ -95,7 +95,9 @@ func (s *AttendanceService) FindAllPaginated(
 	ctx context.Context,
 	userID int64,
 	search string,
-	date *time.Time,
+	//date *time.Time,
+	dateStart *time.Time,
+	dateEnd *time.Time,
 	page int,
 	perPage int,
 ) ([]*attendanceRepository.AttendanceListItem, int64, error) {
@@ -141,7 +143,9 @@ func (s *AttendanceService) FindAllPaginated(
 		userID,
 		isAdmin,
 		strings.TrimSpace(search),
-		date,
+		// date,
+		dateStart,
+		dateEnd,
 		perPage,
 		offset,
 	)

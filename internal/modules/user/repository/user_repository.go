@@ -20,6 +20,8 @@ type UserRepository interface {
 	) ([]*entity.User, int64, error)
 
 	FindActiveAdminPhoneNumbers() ([]string, error)
+
+	FindByIDWithRole(id int64) (*entity.User, error)
 }
 
 type userRepository struct {
@@ -183,4 +185,31 @@ func (r *userRepository) FindActiveAdminPhoneNumbers() ([]string, error) {
 		Pluck("users.phone_number", &phoneNumbers).Error
 
 	return phoneNumbers, err
+}
+
+func (r *userRepository) FindByIDWithRole(
+	id int64,
+) (*entity.User, error) {
+	var result userWithRole
+
+	err := r.db.
+		Table("users").
+		Select("users.*, roles.name AS role_name").
+		Joins("INNER JOIN roles ON roles.id = users.role_id").
+		Where(
+			"users.id = ? AND users.is_active = ? AND users.is_deleted = ? AND roles.is_deleted = ?",
+			id,
+			true,
+			false,
+			false,
+		).
+		First(&result).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	result.User.Role = result.RoleName
+
+	return &result.User, nil
 }

@@ -34,6 +34,13 @@ type NotificationService interface {
 		userID int64,
 		message string,
 	) error
+
+	SendWhatsAppToUser(
+		ctx context.Context,
+		userID int64,
+		target string,
+		message string,
+	) error
 }
 
 type notificationService struct {
@@ -291,4 +298,32 @@ func (s *notificationService) SendWhatsAppToAdmins(
 	}
 
 	return nil
+}
+
+func (s *notificationService) SendWhatsAppToUser(
+	ctx context.Context,
+	userID int64,
+	target string,
+	message string,
+) error {
+	target = strings.TrimSpace(target)
+	message = strings.TrimSpace(message)
+
+	if userID <= 0 {
+		return errors.New("invalid whatsapp recipient user ID")
+	}
+
+	if target == "" || message == "" {
+		return errors.New("whatsapp target and message are required")
+	}
+
+	_, err := s.sendWhatsAppMessage(
+		ctx,
+		target,
+		message,
+		nil,
+		&userID,
+	)
+
+	return err
 }

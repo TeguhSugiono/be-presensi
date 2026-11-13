@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -12,23 +13,25 @@ type Config struct {
 	AppPort    string
 	AppBaseURL string
 
-	DBHost     string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
-	DBTimezone string
+	DBHost                         string
+	DBPort                         string
+	DBUser                         string
+	DBPassword                     string
+	DBName                         string
+	DBSSLMode                      string
+	DBTimezone                     string
+	ActivityCommentWhatsAppEnabled bool
 }
 
 func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		AppName:    getEnv("APP_NAME", "backend-presensi"),
-		AppEnv:     getEnv("APP_ENV", "development"),
-		AppPort:    getEnv("APP_PORT", "8080"),
-		AppBaseURL: getEnv("APP_BASE_URL", "http://localhost:8080"),
+		AppName:                        getEnv("APP_NAME", "backend-presensi"),
+		AppEnv:                         getEnv("APP_ENV", "development"),
+		AppPort:                        getEnv("APP_PORT", "8080"),
+		AppBaseURL:                     getEnv("APP_BASE_URL", "http://localhost:8080"),
+		ActivityCommentWhatsAppEnabled: getEnvBool("ACTIVITY_COMMENT_WHATSAPP_ENABLED", false),
 
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
@@ -48,4 +51,19 @@ func getEnv(key string, defaultValue string) string {
 	}
 
 	return value
+}
+
+func getEnvBool(key string, defaultValue bool) bool {
+	value := os.Getenv(key)
+
+	if value == "" {
+		return defaultValue
+	}
+
+	parsed, err := strconv.ParseBool(value)
+	if err != nil {
+		return defaultValue
+	}
+
+	return parsed
 }
