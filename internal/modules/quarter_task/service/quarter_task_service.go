@@ -198,6 +198,7 @@ func (s *QuarterTaskService) FindAllPaginated(
 	ctx context.Context,
 	search string,
 	year *int,
+	quarterTaskID *int64,
 	page int,
 	perPage int,
 ) ([]*entity.QuarterTask, int64, error) {
@@ -215,10 +216,19 @@ func (s *QuarterTaskService) FindAllPaginated(
 
 	offset := (page - 1) * perPage
 
+	// return s.taskRepo.FindAllPaginated(
+	// 	ctx,
+	// 	strings.TrimSpace(search),
+	// 	year,
+	// 	perPage,
+	// 	offset,
+	// )
+
 	return s.taskRepo.FindAllPaginated(
 		ctx,
 		strings.TrimSpace(search),
 		year,
+		quarterTaskID,
 		perPage,
 		offset,
 	)

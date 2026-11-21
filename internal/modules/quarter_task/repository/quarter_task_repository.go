@@ -40,10 +40,19 @@ type QuarterTaskRepository interface {
 		id int64,
 	) (*entity.QuarterTask, error)
 
+	// FindAllPaginated(
+	// 	ctx context.Context,
+	// 	search string,
+	// 	year *int,
+	// 	limit int,
+	// 	offset int,
+	// ) ([]*entity.QuarterTask, int64, error)
+
 	FindAllPaginated(
 		ctx context.Context,
 		search string,
 		year *int,
+		quarterTaskID *int64,
 		limit int,
 		offset int,
 	) ([]*entity.QuarterTask, int64, error)
@@ -201,6 +210,7 @@ func (r *quarterTaskRepository) FindAllPaginated(
 	ctx context.Context,
 	search string,
 	year *int,
+	quarterTaskID *int64,
 	limit int,
 	offset int,
 ) ([]*entity.QuarterTask, int64, error) {
@@ -218,8 +228,16 @@ func (r *quarterTaskRepository) FindAllPaginated(
 		query = query.Where("title ILIKE ?", keyword)
 	}
 
+	// if year != nil {
+	// 	query = query.Where("year = ?", *year)
+	// }
+
 	if year != nil {
 		query = query.Where("year = ?", *year)
+	}
+
+	if quarterTaskID != nil {
+		query = query.Where("id = ?", *quarterTaskID)
 	}
 
 	if err := query.Count(&total).Error; err != nil {

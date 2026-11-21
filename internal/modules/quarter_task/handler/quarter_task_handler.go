@@ -202,13 +202,39 @@ func (h *QuarterTaskHandler) FindAllPaginated(c *gin.Context) {
 		year = &parsed
 	}
 
+	var quarterTaskID *int64
+
+	if value := c.Query("quarter_task_id"); value != "" {
+		parsed, err := strconv.ParseInt(value, 10, 64)
+		if err != nil || parsed < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"quarter_task_id must be a positive integer",
+			)
+			return
+		}
+
+		quarterTaskID = &parsed
+	}
+
+	// tasks, total, err := h.service.FindAllPaginated(
+	// 	c.Request.Context(),
+	// 	search,
+	// 	year,
+	// 	page,
+	// 	perPage,
+	// )
+
 	tasks, total, err := h.service.FindAllPaginated(
 		c.Request.Context(),
 		search,
 		year,
+		quarterTaskID,
 		page,
 		perPage,
 	)
+
 	if err != nil {
 		c.Error(err)
 		response.Error(
