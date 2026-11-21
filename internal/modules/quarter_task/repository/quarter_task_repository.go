@@ -60,6 +60,11 @@ type QuarterTaskRepository interface {
 	FindAll(
 		ctx context.Context,
 	) ([]*entity.QuarterTask, error)
+
+	FindAllByYear(
+		ctx context.Context,
+		year int,
+	) ([]*entity.QuarterTask, error)
 }
 
 type quarterTaskRepository struct {
@@ -269,6 +274,29 @@ func (r *quarterTaskRepository) FindAll(
 		Order("year DESC").
 		Order("quarter DESC").
 		Order("id DESC").
+		Find(&tasks).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
+
+func (r *quarterTaskRepository) FindAllByYear(
+	ctx context.Context,
+	year int,
+) ([]*entity.QuarterTask, error) {
+	var tasks []*entity.QuarterTask
+
+	err := r.db.WithContext(ctx).
+		Where(
+			"year = ? AND is_deleted = ?",
+			year,
+			false,
+		).
+		Order("quarter ASC").
+		Order("id ASC").
 		Find(&tasks).Error
 
 	if err != nil {

@@ -11,6 +11,8 @@ type QuarterTaskDetailResponse struct {
 	QuarterTaskID   *int64  `json:"quarter_task_id"`
 	UserID          *int64  `json:"user_id"`
 	UserName        *string `json:"user_name"`
+	Year            *int    `json:"year"`
+	Quarter         *string `json:"quarter"`
 	AchievementText *string `json:"achievement_text"`
 	Status          *string `json:"status"`
 	SubmittedAt     *string `json:"submitted_at"`
@@ -37,6 +39,8 @@ func ToQuarterTaskDetailResponse(
 		QuarterTaskID:   detail.QuarterTaskID,
 		UserID:          detail.UserID,
 		UserName:        detail.UserName,
+		Year:            detail.Year,
+		Quarter:         detail.Quarter,
 		AchievementText: detail.AchievementText,
 		Status:          detail.Status,
 		CreatedBy:       detail.CreatedBy,

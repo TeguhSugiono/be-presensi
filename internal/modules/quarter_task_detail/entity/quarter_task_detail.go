@@ -7,6 +7,8 @@ type QuarterTaskDetail struct {
 	QuarterTaskID   *int64     `gorm:"column:quarter_task_id;not null"`
 	UserID          *int64     `gorm:"column:user_id;not null"`
 	UserName        *string    `gorm:"column:user_name;->"`
+	Year            *int       `gorm:"column:year;->"`
+	Quarter         *string    `gorm:"column:quarter;->"`
 	AchievementText *string    `gorm:"column:achievement_text;type:text;not null"`
 	Status          *string    `gorm:"column:status;type:varchar(30);not null;default:draft"`
 	SubmittedAt     *time.Time `gorm:"column:submitted_at"`

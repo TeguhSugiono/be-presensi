@@ -124,11 +124,27 @@ func (s *QuarterTaskDetailService) Upsert(
 				IsDeleted:       boolPointer(false),
 			}
 
+			// if err := txDetailRepo.Create(ctx, detail); err != nil {
+			// 	return err
+			// }
+
+			// result = detail
+			// return nil
+
 			if err := txDetailRepo.Create(ctx, detail); err != nil {
 				return err
 			}
 
-			result = detail
+			// Ambil ulang data beserta relasi user dan quarter task.
+			result, err = txDetailRepo.FindByTaskAndUser(
+				ctx,
+				quarterTaskID,
+				userID,
+			)
+			if err != nil {
+				return err
+			}
+
 			return nil
 		}
 
@@ -159,7 +175,16 @@ func (s *QuarterTaskDetailService) Upsert(
 			return err
 		}
 
-		result = detail
+		// Ambil ulang data beserta relasi user dan quarter task.
+		result, err = txDetailRepo.FindByTaskAndUser(
+			ctx,
+			quarterTaskID,
+			userID,
+		)
+		if err != nil {
+			return err
+		}
+
 		return nil
 	})
 
@@ -202,4 +227,36 @@ func (s *QuarterTaskDetailService) GetByTask(
 
 func boolPointer(value bool) *bool {
 	return &value
+}
+
+func (s *QuarterTaskDetailService) FindAllSubmissionsPaginated(
+	ctx context.Context,
+	search string,
+	year *int,
+	quarterTaskID *int64,
+	page int,
+	perPage int,
+) ([]*entity.QuarterTaskDetail, int64, error) {
+	if page < 1 {
+		page = 1
+	}
+
+	if perPage < 1 {
+		perPage = 10
+	}
+
+	if perPage > 100 {
+		perPage = 100
+	}
+
+	offset := (page - 1) * perPage
+
+	return s.detailRepo.FindAllSubmissionsPaginated(
+		ctx,
+		strings.TrimSpace(search),
+		year,
+		quarterTaskID,
+		perPage,
+		offset,
+	)
 }

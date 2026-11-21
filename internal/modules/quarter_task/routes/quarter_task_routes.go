@@ -17,6 +17,19 @@ func RegisterQuarterTaskRoutes(
 	userRepo userRepository.UserRepository,
 	roleRepo roleRepository.RoleRepository,
 ) {
+
+	// ==========================================
+	// ADMIN SUBMISSION LIST
+	// ==========================================
+	submissionGroup := router.Group("/api/quarter-task-submissions")
+	submissionGroup.Use(middleware.AuthMiddleware())
+	submissionGroup.Use(middleware.AdminMiddleware(userRepo, roleRepo))
+
+	submissionGroup.GET(
+		"",
+		quarterTaskDetailHandler.FindAllSubmissionsPaginated,
+	)
+
 	// Semua endpoint Quarter Task wajib login.
 	group := router.Group("/api/quarter-tasks")
 	group.Use(middleware.AuthMiddleware())
@@ -76,5 +89,10 @@ func RegisterQuarterTaskRoutes(
 	userGroup.POST(
 		"/:id",
 		quarterTaskDetailHandler.Upsert,
+	)
+
+	userGroup.GET(
+		"/by-year",
+		quarterTaskHandler.FindAllByYear,
 	)
 }

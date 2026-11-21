@@ -254,3 +254,10 @@ func (s *QuarterTaskService) FindSubmissions(
 
 	return s.detailRepo.FindAllByTask(ctx, quarterTaskID)
 }
+
+func (s *QuarterTaskService) FindAllByYear(
+	ctx context.Context,
+	year int,
+) ([]*entity.QuarterTask, error) {
+	return s.taskRepo.FindAllByYear(ctx, year)
+}

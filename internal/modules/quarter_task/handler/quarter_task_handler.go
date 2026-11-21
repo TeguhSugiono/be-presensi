@@ -325,3 +325,44 @@ func (h *QuarterTaskHandler) handleError(
 		)
 	}
 }
+
+func (h *QuarterTaskHandler) FindAllByYear(c *gin.Context) {
+	value := c.Query("year")
+
+	year, err := strconv.Atoi(value)
+	if err != nil || year < 2000 {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"year must be a valid year",
+		)
+		return
+	}
+
+	tasks, err := h.service.FindAllByYear(
+		c.Request.Context(),
+		year,
+	)
+	if err != nil {
+		c.Error(err)
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to get quarter tasks",
+		)
+		return
+	}
+
+	data := make([]interface{}, 0, len(tasks))
+
+	for _, task := range tasks {
+		data = append(data, dto.ToQuarterTaskResponse(task))
+	}
+
+	response.Success(
+		c,
+		http.StatusOK,
+		"quarter tasks retrieved successfully",
+		data,
+	)
+}

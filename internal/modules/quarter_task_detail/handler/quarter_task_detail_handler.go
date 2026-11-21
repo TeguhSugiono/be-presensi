@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"be-presensi/internal/modules/auth/middleware"
 	detailService "be-presensi/internal/modules/quarter_task_detail/service"
@@ -147,4 +148,110 @@ func (h *QuarterTaskDetailHandler) handleError(
 			"failed to process quarter task detail",
 		)
 	}
+}
+
+func (h *QuarterTaskDetailHandler) FindAllSubmissionsPaginated(c *gin.Context) {
+	search := strings.TrimSpace(c.Query("search"))
+
+	page := 1
+	perPage := 10
+
+	if value := c.Query("page"); value != "" {
+		parsed, err := strconv.Atoi(value)
+		if err != nil || parsed < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"page must be a positive integer",
+			)
+			return
+		}
+		page = parsed
+	}
+
+	if value := c.Query("per_page"); value != "" {
+		parsed, err := strconv.Atoi(value)
+		if err != nil || parsed < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"per_page must be a positive integer",
+			)
+			return
+		}
+		perPage = parsed
+	}
+
+	if perPage > 100 {
+		perPage = 100
+	}
+
+	var year *int
+
+	if value := c.Query("year"); value != "" {
+		parsed, err := strconv.Atoi(value)
+		if err != nil || parsed < 2000 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"year must be a valid year",
+			)
+			return
+		}
+		year = &parsed
+	}
+
+	var quarterTaskID *int64
+
+	if value := c.Query("quarter_task_id"); value != "" {
+		parsed, err := strconv.ParseInt(value, 10, 64)
+		if err != nil || parsed < 1 {
+			response.Error(
+				c,
+				http.StatusBadRequest,
+				"quarter_task_id must be a positive integer",
+			)
+			return
+		}
+		quarterTaskID = &parsed
+	}
+
+	details, total, err := h.service.FindAllSubmissionsPaginated(
+		c.Request.Context(),
+		search,
+		year,
+		quarterTaskID,
+		page,
+		perPage,
+	)
+
+	if err != nil {
+		c.Error(err)
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to get quarter task submissions",
+		)
+		return
+	}
+
+	data := make([]interface{}, 0, len(details))
+
+	for _, detail := range details {
+		data = append(
+			data,
+			detailDTO.ToQuarterTaskDetailResponse(detail),
+		)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "quarter task submissions retrieved successfully",
+		"data":    data,
+		"meta": gin.H{
+			"total":    total,
+			"page":     page,
+			"per_page": perPage,
+		},
+	})
 }
