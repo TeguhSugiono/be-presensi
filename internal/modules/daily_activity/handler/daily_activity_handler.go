@@ -327,10 +327,20 @@ func (h *DailyActivityHandler) FindAllPaginated(c *gin.Context) {
 		return
 	}
 
+	// Convert Entity to DTO
+	data := make([]*dto.DailyActivityResponse, 0, len(activities))
+
+	for i := range activities {
+		data = append(
+			data,
+			dto.ToDailyActivityResponse(activities[i]),
+		)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "daily activities retrieved successfully",
-		"data":    activities,
+		"data":    data,
 		"meta": gin.H{
 			"total":    total,
 			"page":     page,

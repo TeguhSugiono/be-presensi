@@ -135,3 +135,12 @@ type AttendanceSummaryResponse struct {
 	ClockOut    int64  `json:"clock_out"`
 	NotAttended int64  `json:"not_attended"`
 }
+
+type AttendanceSummaryRangeResponse struct {
+	DateStart   string `json:"date_start"`
+	DateEnd     string `json:"date_end"`
+	TotalUsers  int64  `json:"total_users"`
+	ClockIn     int64  `json:"clock_in"`
+	ClockOut    int64  `json:"clock_out"`
+	NotAttended int64  `json:"not_attended"`
+}

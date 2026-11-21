@@ -829,3 +829,63 @@ func (s *AttendanceService) GetSummary(
 		NotAttended: summary.NotAttended,
 	}, nil
 }
+
+func (s *AttendanceService) GetSummaryRange(
+	ctx context.Context,
+	userID int64,
+	dateStart time.Time,
+	dateEnd time.Time,
+) (*dto.AttendanceSummaryRangeResponse, error) {
+	if userID <= 0 {
+		return nil, ErrAttendanceUserNotFound
+	}
+
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceUserNotFound
+		}
+		return nil, err
+	}
+
+	if user == nil || !user.IsActive || user.IsDeleted {
+		return nil, ErrAttendanceUserNotFound
+	}
+
+	role, err := s.roleRepo.FindByID(ctx, user.RoleID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrAttendanceRoleNotFound
+		}
+		return nil, err
+	}
+
+	if role == nil || role.IsDeleted {
+		return nil, ErrAttendanceRoleNotFound
+	}
+
+	isAdmin := strings.EqualFold(
+		strings.TrimSpace(role.Name),
+		"Admin",
+	)
+
+	summary, err := s.attendanceRepo.GetSummaryRange(
+		ctx,
+		dateStart,
+		dateEnd,
+		userID,
+		isAdmin,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.AttendanceSummaryRangeResponse{
+		DateStart:   dateStart.Format("2006-01-02"),
+		DateEnd:     dateEnd.Format("2006-01-02"),
+		TotalUsers:  summary.TotalUsers,
+		ClockIn:     summary.ClockIn,
+		ClockOut:    summary.ClockOut,
+		NotAttended: summary.NotAttended,
+	}, nil
+}

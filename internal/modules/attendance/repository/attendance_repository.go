@@ -93,6 +93,14 @@ type AttendanceRepository interface {
 		ctx context.Context,
 		date time.Time,
 	) (*AttendanceSummary, error)
+
+	GetSummaryRange(
+		ctx context.Context,
+		dateStart time.Time,
+		dateEnd time.Time,
+		userID int64,
+		isAdmin bool,
+	) (*AttendanceSummary, error)
 }
 
 type attendanceRepository struct {
@@ -687,6 +695,64 @@ func (r *attendanceRepository) GetSummary(
 
 	err := r.db.WithContext(ctx).
 		Raw(query, date.Format("2006-01-02")).
+		Scan(&summary).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &summary, nil
+}
+
+func (r *attendanceRepository) GetSummaryRange(
+	ctx context.Context,
+	dateStart time.Time,
+	dateEnd time.Time,
+	userID int64,
+	isAdmin bool,
+) (*AttendanceSummary, error) {
+	var summary AttendanceSummary
+
+	query := `
+        SELECT
+            COUNT(DISTINCT users.id) AS total_users,
+
+            COUNT(DISTINCT users.id) FILTER (
+                WHERE attendances.check_in_time IS NOT NULL
+            ) AS clock_in,
+
+            COUNT(DISTINCT users.id) FILTER (
+                WHERE attendances.check_out_time IS NOT NULL
+            ) AS clock_out,
+
+            COUNT(DISTINCT users.id) FILTER (
+                WHERE attendances.check_in_time IS NULL
+            ) AS not_attended
+
+        FROM users
+        INNER JOIN roles
+            ON roles.id = users.role_id
+
+        LEFT JOIN attendances
+            ON attendances.user_id = users.id
+            AND attendances.attendance_date BETWEEN ?::date AND ?::date
+            AND attendances.is_deleted = false
+
+        WHERE users.is_active = true
+            AND users.is_deleted = false
+            AND roles.is_deleted = false
+            AND LOWER(roles.name) IN ('guru', 'karyawan')
+            AND (? = TRUE OR users.id = ?)
+    `
+
+	err := r.db.WithContext(ctx).
+		Raw(
+			query,
+			dateStart.Format("2006-01-02"),
+			dateEnd.Format("2006-01-02"),
+			isAdmin,
+			userID,
+		).
 		Scan(&summary).Error
 
 	if err != nil {

@@ -51,7 +51,7 @@ func (h *ActivityCommentHandler) Create(c *gin.Context) {
 	comment, err := h.service.Create(
 		c.Request.Context(),
 		userID,
-		req,
+		&req,
 	)
 	if err != nil {
 		h.handleError(c, err)
@@ -72,8 +72,10 @@ func toActivityCommentResponse(
 	return dto.ActivityCommentResponse{
 		ID:              comment.ID,
 		DailyActivityID: comment.DailyActivityID,
+		DailyTaskDate:   comment.DailyTaskDate.Format("2006-01-02"),
 		KepsekID:        comment.KepsekID,
 		Comment:         comment.Comment,
+		Status:          comment.Status,
 		WANotified:      comment.WANotified,
 		CreatedAt:       comment.CreatedAt.Format("2006-01-02 15:04:05"),
 	}
@@ -101,6 +103,14 @@ func (h *ActivityCommentHandler) handleError(
 		)
 
 	case errors.Is(err, service.ErrActivityCommentRequired):
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			err.Error(),
+		)
+
+	case errors.Is(err, service.ErrActivityCommentRequired),
+		errors.Is(err, service.ErrInvalidActivityCommentStatus):
 		response.Error(
 			c,
 			http.StatusBadRequest,

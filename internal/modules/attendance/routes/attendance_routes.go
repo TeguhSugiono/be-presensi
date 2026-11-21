@@ -32,6 +32,7 @@ func RegisterAttendanceRoutes(
 
 		attendance.GET("/paginated", attendanceHandler.FindAllPaginated)
 		attendance.GET("/summary", attendanceHandler.GetSummary)
+		attendance.GET("/summary/range", attendanceHandler.GetSummaryRange)
 
 		attendance.GET("/:id/check-in-detail", attendanceHandler.CheckInDetail)
 		attendance.GET("/:id/check-out-detail", attendanceHandler.CheckOutDetail)

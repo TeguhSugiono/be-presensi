@@ -930,7 +930,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_1d0p}}",
+                  "value": "{{json_web_token_0kk7}}",
                   "type": "string"
                 }
               ]
@@ -942,19 +942,19 @@
               "formdata": [
                 {
                   "key": "check_in_date",
-                  "value": "2026-11-10",
+                  "value": "2026-11-21",
                   "type": "text"
                 },
                 {
                   "key": "check_in_time",
-                  "value": "19:39:00",
+                  "value": "06:19:00",
                   "type": "text"
                 },
                 {
                   "key": "check_in_photo",
                   "type": "file",
                   "src": [
-                    "/C:/Users/teguh/Pictures/aaaa/hpgruesen-tank-truck-1388933_1920.jpg"
+                    "/C:/Users/teguh/Pictures/Screenshots/Screenshot 2026-02-18 124614.png"
                   ]
                 },
                 {
@@ -998,7 +998,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_1d0p}}",
+                  "value": "{{json_web_token_11h3}}",
                   "type": "string"
                 }
               ]
@@ -1010,19 +1010,19 @@
               "formdata": [
                 {
                   "key": "check_out_date",
-                  "value": "2026-11-10",
+                  "value": "2026-11-15",
                   "type": "text"
                 },
                 {
                   "key": "check_out_time",
-                  "value": "19:40:00",
+                  "value": "15:33:00",
                   "type": "text"
                 },
                 {
                   "key": "check_out_photo",
                   "type": "file",
                   "src": [
-                    "/C:/Users/teguh/Pictures/aaaa/rauschenberger-transport-3210728_1920.jpg"
+                    "/C:/Users/teguh/Pictures/aaaa/6.jpg"
                   ]
                 },
                 {
@@ -1312,7 +1312,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0wtb}}",
+                  "value": "{{json_web_token_0ksr}}",
                   "type": "string"
                 }
               ]
@@ -1335,6 +1335,48 @@
                 {
                   "key": "date",
                   "value": "2026-11-08"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Summary Range Attendance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0ksr}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/attendances/summary/range?date_start=2026-11-01&date_end=2026-11-15",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "attendances",
+                "summary",
+                "range"
+              ],
+              "query": [
+                {
+                  "key": "date_start",
+                  "value": "2026-11-01"
+                },
+                {
+                  "key": "date_end",
+                  "value": "2026-11-15"
                 }
               ]
             }
@@ -1511,7 +1553,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJzdWIiOiIxIiwiZXhwIjoxNzkyMzk2MTkwLCJpYXQiOjE3OTIzMDk3OTB9.CaYmIgKqwloR7MleJFjwDHDMp44PXV79wm79PIMH1_0",
+                  "value": "{{json_web_token_0ksr}}",
                   "type": "string"
                 }
               ]
@@ -1598,7 +1640,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_1d0p}}",
+                  "value": "{{json_web_token_0cgb}}",
                   "type": "string"
                 }
               ]
@@ -1607,7 +1649,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//     //\"activity_date\": \"2026-10-31\",\r\n//     \"description\": \"Hari Ini belajar rumus calculus dari bab 4 s/d 5\",\r\n//     \"action\": \"draft\"\r\n// }\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n\r\n{\r\n  //\"activity_date\": \"2026-10-31\",\r\n  \"description\": \"Hari Ini belajar rumus bahasa indonesia dari bab 7 s/d 11\",\r\n  \"action\": \"submit\"\r\n}",
+              "raw": "// Simpan Sebagai draft\r\n\r\n// {\r\n//     //\"activity_date\": \"2026-10-31\",\r\n//     \"description\": \"Hari Ini belajar celcius dari bab 4 s/d 5\",\r\n//     \"action\": \"draft\"\r\n// }\r\n\r\n// Simpan Sebagai submit\r\n// lock daily\r\n\r\n\r\n\r\n// {\r\n//     //\"activity_date\": \"2026-10-31\",\r\n//   \"description\": \"Pengujian Activity Comment skenario 1\",\r\n//   \"action\": \"submit\"\r\n// }\r\n\r\n\r\n{\r\n    \"description\": \"Mengerjakan laporan administrasi sekolah, melakukan pemeriksaan data siswa, memperbarui rekapitulasi administrasi, dan menyelesaikan laporan harian.\",\r\n    \"action\": \"submit\"\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1638,7 +1680,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0wdl}}",
+                  "value": "{{json_web_token_0r8b}}",
                   "type": "string"
                 }
               ]
@@ -1647,7 +1689,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"daily_activity_id\": 5,\r\n  \"comment\": \"Aktivitas sudah baik, pertahankan kedisiplinannya.\"\r\n}",
+              "raw": "{\r\n    \"daily_activity_id\": 7,\r\n    \"comment\": \"Aktivitas harian telah diperiksa dan disetujui.\",\r\n    \"status\": 1\r\n}\r\n\r\n\r\n// guru harus memperbaiki deskripsi\r\n// {\r\n//     \"daily_activity_id\": 8,\r\n//     \"comment\": \"Deskripsi aktivitas perlu diperjelas. Mohon lengkapi detail pekerjaan yang dilakukan.\",\r\n//     \"status\": 2\r\n\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1744,6 +1786,333 @@
                 "notifications",
                 "whatsapp",
                 "test"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Quarter Task Module",
+      "item": [
+        {
+          "name": "Create Quarter Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0sss}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"TEST DELETE QUARTER TASK\",\r\n    \"description\": \"Data untuk pengujian delete\",\r\n    \"year\": 2027,\r\n    \"quarter\": \"Q2\",\r\n    \"start_date\": \"2027-04-01\",\r\n    \"end_date\": \"2027-06-30\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/quarter-tasks",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quarter-tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quarter Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_08ek}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/quarter-tasks?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quarter-tasks"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "pertama",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quarter Task Submission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0u01}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/quarter-tasks/2/submissions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quarter-tasks",
+                "2",
+                "submissions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quarter Task With ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_08ek}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/quarter-tasks/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quarter-tasks",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quarter Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0sss}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Laporan Capaian Pembelajaran Q1 - Revisi\",\r\n    \"description\": \"Laporan capaian pembelajaran triwulan pertama (revisi)\",\r\n    \"year\": 2027,\r\n    \"quarter\": \"Q1\",\r\n    \"start_date\": \"2027-01-01\",\r\n    \"end_date\": \"2027-03-31\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/quarter-tasks/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quarter-tasks",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Quarter Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0sss}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/quarter-tasks/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quarter-tasks",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quarter Task Guru/Karyawan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_09cc}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/user/quarter-tasks",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "user",
+                "quarter-tasks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quarter Task Guru/Karyawan With ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_09cc}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/user/quarter-tasks/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "user",
+                "quarter-tasks",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Quarter Task Guru/Karyawan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_09cc}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "// insert\r\n// {\r\n//     \"achievement_text\": \"<p>Melaksanakan kegiatan pembelajaran sesuai dengan kurikulum yang telah ditetapkan.</p>\",\r\n//     \"action\": \"draft\"\r\n// }\r\n\r\n// update\r\n{\r\n    \"achievement_text\": \"<p>Melaksanakan kegiatan pembelajaran sesuai kurikulum dan melakukan evaluasi hasil belajar peserta didik.</p>\",\r\n    \"action\": \"draft\"\r\n}\r\n\r\n\r\n// update draft to submit\r\n// {\r\n//     \"achievement_text\": \"<p>Melaksanakan kegiatan pembelajaran sesuai kurikulum dan melakukan evaluasi hasil belajar peserta didik.</p>\",\r\n//     \"action\": \"submit\"\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/user/quarter-tasks/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "user",
+                "quarter-tasks",
+                "2"
               ]
             }
           },
@@ -1873,6 +2242,50 @@
     },
     {
       "key": "json_web_token_0456",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0sss",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_08ek",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_09cc",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0u01",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0ksr",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_11h3",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1ejk",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0kk7",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0xu5",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0cgb",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0r8b",
       "secret": true
     }
   ]

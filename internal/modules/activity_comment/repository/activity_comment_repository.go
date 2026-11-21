@@ -9,6 +9,8 @@ import (
 )
 
 type ActivityCommentRepository interface {
+	WithTx(tx *gorm.DB) ActivityCommentRepository
+
 	Create(
 		ctx context.Context,
 		comment *entity.ActivityComment,
@@ -32,6 +34,12 @@ func NewActivityCommentRepository(
 	return &activityCommentRepository{db: db}
 }
 
+func (r *activityCommentRepository) WithTx(
+	tx *gorm.DB,
+) ActivityCommentRepository {
+	return &activityCommentRepository{db: tx}
+}
+
 func (r *activityCommentRepository) Create(
 	ctx context.Context,
 	comment *entity.ActivityComment,
@@ -46,12 +54,22 @@ func (r *activityCommentRepository) FindByDailyActivityID(
 	var comments []*entity.ActivityComment
 
 	err := r.db.WithContext(ctx).
+		Model(&entity.ActivityComment{}).
+		Select(`
+            activity_comments.*,
+            daily_activities.activity_date AS daily_task_date
+        `).
+		Joins(`
+            INNER JOIN daily_activities
+            ON daily_activities.id = activity_comments.daily_activity_id
+        `).
 		Where(
-			"daily_activity_id = ? AND is_deleted = ?",
+			"activity_comments.daily_activity_id = ? AND activity_comments.is_deleted = ? AND daily_activities.is_deleted = ?",
 			dailyActivityID,
 			false,
+			false,
 		).
-		Order("created_at ASC, id ASC").
+		Order("activity_comments.created_at ASC, activity_comments.id ASC").
 		Find(&comments).Error
 
 	if err != nil {

@@ -798,3 +798,88 @@ func (h *AttendanceHandler) GetSummary(c *gin.Context) {
 		summary,
 	)
 }
+
+func (h *AttendanceHandler) GetSummaryRange(c *gin.Context) {
+	userID, ok := middleware.GetUserID(c)
+	if !ok || userID <= 0 {
+		response.Error(c, http.StatusUnauthorized, "invalid authenticated user")
+		return
+	}
+
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		loc = time.FixedZone("WIB", 7*60*60)
+	}
+
+	dateStartParam := strings.TrimSpace(c.Query("date_start"))
+	dateEndParam := strings.TrimSpace(c.Query("date_end"))
+
+	if dateStartParam == "" || dateEndParam == "" {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"date_start and date_end are required",
+		)
+		return
+	}
+
+	dateStart, err := time.ParseInLocation(
+		"2006-01-02",
+		dateStartParam,
+		loc,
+	)
+	if err != nil {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"invalid date_start format, use YYYY-MM-DD",
+		)
+		return
+	}
+
+	dateEnd, err := time.ParseInLocation(
+		"2006-01-02",
+		dateEndParam,
+		loc,
+	)
+	if err != nil {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"invalid date_end format, use YYYY-MM-DD",
+		)
+		return
+	}
+
+	if dateStart.After(dateEnd) {
+		response.Error(
+			c,
+			http.StatusBadRequest,
+			"date_start cannot be after date_end",
+		)
+		return
+	}
+
+	summary, err := h.attendanceService.GetSummaryRange(
+		c.Request.Context(),
+		userID,
+		dateStart,
+		dateEnd,
+	)
+	if err != nil {
+		c.Error(err)
+		response.Error(
+			c,
+			http.StatusInternalServerError,
+			"failed to retrieve attendance summary",
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		http.StatusOK,
+		"attendance summary range retrieved successfully",
+		summary,
+	)
+}

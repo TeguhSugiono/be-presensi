@@ -5,8 +5,10 @@ import "time"
 type ActivityComment struct {
 	ID              int64     `gorm:"column:id;primaryKey"`
 	DailyActivityID int64     `gorm:"column:daily_activity_id;not null"`
+	DailyTaskDate   time.Time `gorm:"column:daily_task_date;->"`
 	KepsekID        int64     `gorm:"column:kepsek_id;not null"`
 	Comment         string    `gorm:"column:comment;type:text;not null"`
+	Status          int16     `gorm:"column:status;not null"`
 	WANotified      bool      `gorm:"column:wa_notified;not null;default:false"`
 	CreatedBy       *int64    `gorm:"column:created_by"`
 	CreatedAt       time.Time `gorm:"column:created_at;not null"`

@@ -242,6 +242,7 @@ const (
 	DailyActivityStatusDraft     int16 = 1
 	DailyActivityStatusSubmitted int16 = 2
 	DailyActivityStatusApproved  int16 = 3
+	DailyActivityStatusRevision  int16 = 4
 )
 
 func (s *DailyActivityService) Upsert(
@@ -340,6 +341,8 @@ func (s *DailyActivityService) Upsert(
 				IsLocked:     isLocked,
 				CreatedBy:    &userID,
 				CreatedAt:    now,
+				UpdatedAt:    &now,
+				UpdatedBy:    &userID,
 				IsDeleted:    false,
 			}
 
@@ -356,7 +359,9 @@ func (s *DailyActivityService) Upsert(
 		}
 
 		// Hanya Draft yang boleh diedit.
-		if activity.Status != DailyActivityStatusDraft ||
+		// Draft dan Revision boleh diedit selama tidak terkunci.
+		if (activity.Status != DailyActivityStatusDraft &&
+			activity.Status != DailyActivityStatusRevision) ||
 			activity.IsLocked {
 			return ErrActivityLocked
 		}

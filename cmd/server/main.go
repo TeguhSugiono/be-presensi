@@ -53,6 +53,15 @@ import (
 	activityCommentRoutes "be-presensi/internal/modules/activity_comment/routes"
 	activityCommentService "be-presensi/internal/modules/activity_comment/service"
 
+	quarterTaskHandler "be-presensi/internal/modules/quarter_task/handler"
+	quarterTaskRepository "be-presensi/internal/modules/quarter_task/repository"
+	quarterTaskRoutes "be-presensi/internal/modules/quarter_task/routes"
+	quarterTaskService "be-presensi/internal/modules/quarter_task/service"
+
+	quarterTaskDetailHandler "be-presensi/internal/modules/quarter_task_detail/handler"
+	quarterTaskDetailRepository "be-presensi/internal/modules/quarter_task_detail/repository"
+	quarterTaskDetailService "be-presensi/internal/modules/quarter_task_detail/service"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -175,6 +184,48 @@ func main() {
 		roleRepo,
 	)
 
+	// =========================
+	// Quarter Task Module
+	// =========================
+
+	// Repository
+	quarterTaskRepo := quarterTaskRepository.NewQuarterTaskRepository(db)
+
+	quarterTaskDetailRepo := quarterTaskDetailRepository.NewQuarterTaskDetailRepository(db)
+
+	// Service Header
+	quarterTaskSvc := quarterTaskService.NewQuarterTaskService(
+		db,
+		quarterTaskRepo,
+		quarterTaskDetailRepo,
+	)
+
+	// Service Detail
+	quarterTaskDetailSvc := quarterTaskDetailService.NewQuarterTaskDetailService(
+		db,
+		quarterTaskRepo,
+		quarterTaskDetailRepo,
+	)
+
+	// Handler Header
+	quarterTaskHdl := quarterTaskHandler.NewQuarterTaskHandler(
+		quarterTaskSvc,
+	)
+
+	// Handler Detail
+	quarterTaskDetailHdl := quarterTaskDetailHandler.NewQuarterTaskDetailHandler(
+		quarterTaskDetailSvc,
+	)
+
+	// Routes
+	quarterTaskRoutes.RegisterQuarterTaskRoutes(
+		router,
+		quarterTaskHdl,
+		quarterTaskDetailHdl,
+		userRepo,
+		roleRepo,
+	)
+
 	userSvc := userService.NewUserService(userRepo, db)
 	userHdl := userHandler.NewUserHandler(userSvc)
 
@@ -187,6 +238,7 @@ func main() {
 	activityCommentRepo := activityCommentRepository.NewActivityCommentRepository(db)
 
 	activityCommentSvc := activityCommentService.NewActivityCommentService(
+		db,
 		cfg,
 		activityCommentRepo,
 		dailyActivityRepo,

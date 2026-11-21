@@ -61,6 +61,16 @@ type DailyActivityRepository interface {
 		ctx context.Context,
 		id int64,
 	) (*entity.DailyActivity, error)
+
+	FindByIDForUpdate(
+		ctx context.Context,
+		id int64,
+	) (*entity.DailyActivity, error)
+
+	UpdateReviewStatus(
+		ctx context.Context,
+		activity *entity.DailyActivity,
+	) error
 }
 
 type dailyActivityRepository struct {
@@ -301,4 +311,55 @@ func (r *dailyActivityRepository) FindByID(
 	}
 
 	return &activity, nil
+}
+
+func (r *dailyActivityRepository) FindByIDForUpdate(
+	ctx context.Context,
+	id int64,
+) (*entity.DailyActivity, error) {
+	var activity entity.DailyActivity
+
+	err := r.db.WithContext(ctx).
+		Clauses(clause.Locking{Strength: "UPDATE"}).
+		Where(
+			"id = ? AND is_deleted = ?",
+			id,
+			false,
+		).
+		First(&activity).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &activity, nil
+}
+
+func (r *dailyActivityRepository) UpdateReviewStatus(
+	ctx context.Context,
+	activity *entity.DailyActivity,
+) error {
+	result := r.db.WithContext(ctx).
+		Model(&entity.DailyActivity{}).
+		Where(
+			"id = ? AND is_deleted = ?",
+			activity.ID,
+			false,
+		).
+		Updates(map[string]interface{}{
+			"status":     activity.Status,
+			"is_locked":  activity.IsLocked,
+			"updated_by": activity.UpdatedBy,
+			"updated_at": activity.UpdatedAt,
+		})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
 }
