@@ -19,11 +19,11 @@ type UpsertDailyActivityRequest struct {
 	Description  string `json:"description"`
 	Action       string `json:"action" binding:"required,oneof=draft submit"`
 }
-
 type DailyActivityResponse struct {
 	ID           int64   `json:"id"`
 	AttendanceID int64   `json:"attendance_id"`
 	UserID       int64   `json:"user_id"`
+	UserName     string  `json:"user_name"`
 	ActivityDate string  `json:"activity_date"`
 	Description  string  `json:"description"`
 	Status       int16   `json:"status"`
@@ -48,6 +48,7 @@ func ToDailyActivityResponse(
 		ID:           activity.ID,
 		AttendanceID: activity.AttendanceID,
 		UserID:       activity.UserID,
+		UserName:     activity.UserName,
 		ActivityDate: activity.ActivityDate.In(loc).Format("2006-01-02"),
 		Description:  activity.Description,
 		Status:       activity.Status,
