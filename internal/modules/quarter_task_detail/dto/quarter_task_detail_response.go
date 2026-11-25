@@ -9,6 +9,7 @@ import (
 type QuarterTaskDetailResponse struct {
 	ID              *int64  `json:"id"`
 	QuarterTaskID   *int64  `json:"quarter_task_id"`
+	Title           *string `json:"title"`
 	UserID          *int64  `json:"user_id"`
 	UserName        *string `json:"user_name"`
 	Year            *int    `json:"year"`
@@ -37,6 +38,7 @@ func ToQuarterTaskDetailResponse(
 	result := &QuarterTaskDetailResponse{
 		ID:              detail.ID,
 		QuarterTaskID:   detail.QuarterTaskID,
+		Title:           detail.Title,
 		UserID:          detail.UserID,
 		UserName:        detail.UserName,
 		Year:            detail.Year,

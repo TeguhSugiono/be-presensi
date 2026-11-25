@@ -49,26 +49,6 @@ type AttendanceService struct {
 	notificationService notificationService.NotificationService
 }
 
-// func NewAttendanceService(
-// 	db *gorm.DB,
-// 	attendanceRepo attendanceRepository.AttendanceRepository,
-// 	dailyActivityRepo dailyActivityRepository.DailyActivityRepository,
-// 	userRepo userRepository.UserRepository,
-// 	roleRepo roleRepository.RoleRepository,
-// 	workScheduleRepo workScheduleRepository.WorkScheduleRepository,
-// 	schoolLocationRepo schoolLocationRepository.SchoolLocationRepository,
-// ) *AttendanceService {
-// 	return &AttendanceService{
-// 		db:                 db,
-// 		attendanceRepo:     attendanceRepo,
-// 		dailyActivityRepo:  dailyActivityRepo,
-// 		userRepo:           userRepo,
-// 		roleRepo:           roleRepo,
-// 		workScheduleRepo:   workScheduleRepo,
-// 		schoolLocationRepo: schoolLocationRepo,
-// 	}
-// }
-
 func NewAttendanceService(
 	db *gorm.DB,
 	attendanceRepo attendanceRepository.AttendanceRepository,
@@ -302,6 +282,27 @@ func (s *AttendanceService) CheckIn(
 		return nil, err
 	}
 
+	outOfArea, err := s.isOutsideActiveSchoolLocations(
+		ctx,
+		req.CheckInLat,
+		req.CheckInLng,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var noteIn *string
+
+	if outOfArea {
+		if req.OutOfAreaNoteIn == nil ||
+			strings.TrimSpace(*req.OutOfAreaNoteIn) == "" {
+			return nil, ErrOutOfAreaNoteRequired
+		}
+
+		cleanNote := strings.TrimSpace(*req.OutOfAreaNoteIn)
+		noteIn = &cleanNote
+	}
+
 	user, err := s.userRepo.FindByID(userID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -387,17 +388,62 @@ func (s *AttendanceService) CheckIn(
 		CheckInLat:         req.CheckInLat,
 		CheckInLng:         req.CheckInLng,
 		IsLate:             isLate,
-		IsOutOfArea:        false,
-		CreatedBy:          &createdBy,
-		CreatedAt:          createdAt,
-		IsDeleted:          false,
-		KeteranganIn:       req.KeteranganIn,
+
+		// Status check-out tetap false karena belum check-out.
+		IsOutOfArea: false,
+
+		// Status khusus check-in.
+		IsOutOfAreaIn:   outOfArea,
+		OutOfAreaNoteIn: noteIn,
+
+		CreatedBy: &createdBy,
+
+		CreatedAt:    createdAt,
+		IsDeleted:    false,
+		KeteranganIn: req.KeteranganIn,
 	}
+
+	// if err := s.attendanceRepo.Create(ctx, attendance); err != nil {
+	// 	// The database's unique (user_id, attendance_date) constraint
+	// 	// remains the final protection against concurrent check-ins.
+	// 	return nil, err
+	// }
+
+	// return attendance, nil
 
 	if err := s.attendanceRepo.Create(ctx, attendance); err != nil {
 		// The database's unique (user_id, attendance_date) constraint
 		// remains the final protection against concurrent check-ins.
 		return nil, err
+	}
+
+	// Kirim notifikasi WhatsApp jika check-in dilakukan di luar area.
+	if outOfArea {
+		message := fmt.Sprintf(
+			"⚠️ NOTIFIKASI CHECK-IN DI LUAR AREA SEKOLAH\n\n"+
+				"Nama: %s\n"+
+				"Tanggal: %s\n"+
+				"Waktu Check-in: %s\n"+
+				"Lokasi: https://www.google.com/maps?q=%f,%f\n"+
+				"Keterangan: %s\n\n"+
+				"Notifikasi otomatis dari Sistem Presensi.",
+
+			user.FullName,
+			attendanceDate.Format("02-01-2006"),
+			clientTime.Format("15:04:05"),
+			req.CheckInLat,
+			req.CheckInLng,
+			*noteIn,
+		)
+
+		if err := s.notificationService.SendWhatsAppToAdmins(
+			ctx,
+			attendance.ID,
+			userID,
+			message,
+		); err != nil {
+			// Kegagalan notifikasi tidak membatalkan check-in.
+		}
 	}
 
 	return attendance, nil

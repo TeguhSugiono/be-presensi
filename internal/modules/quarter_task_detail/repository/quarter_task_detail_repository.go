@@ -302,6 +302,7 @@ func (r *quarterTaskDetailRepository) FindAllSubmissionsPaginated(
 		Select(
 			"quarter_task_details.*, " +
 				"users.full_name AS user_name, " +
+				"quarter_tasks.title AS title, " +
 				"quarter_tasks.year AS year, " +
 				"quarter_tasks.quarter AS quarter",
 		).

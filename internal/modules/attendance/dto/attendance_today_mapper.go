@@ -27,13 +27,15 @@ func ToAttendanceTodayResponse(
 		"/check-in-photo"
 
 	response := &AttendanceTodayResponse{
-		ID:             &attendanceID,
-		AttendanceDate: &attendanceDate,
-		CheckInTime:    &checkInTime,
-		PhotoURLIn:     &photoURLIn,
-		LatitudeIn:     &checkInLat,
-		LongitudeIn:    &checkInLng,
-		KeteranganIn:   attendance.KeteranganIn,
+		ID:              &attendanceID,
+		AttendanceDate:  &attendanceDate,
+		CheckInTime:     &checkInTime,
+		PhotoURLIn:      &photoURLIn,
+		LatitudeIn:      &checkInLat,
+		LongitudeIn:     &checkInLng,
+		IsOutOfAreaIn:   &attendance.IsOutOfAreaIn,
+		OutOfAreaNoteIn: attendance.OutOfAreaNoteIn,
+		KeteranganIn:    attendance.KeteranganIn,
 	}
 
 	if attendance.CheckOutTime != nil {

@@ -5,6 +5,7 @@ import "time"
 type QuarterTaskDetail struct {
 	ID              *int64     `gorm:"column:id;primaryKey"`
 	QuarterTaskID   *int64     `gorm:"column:quarter_task_id;not null"`
+	Title           *string    `gorm:"column:title;->"`
 	UserID          *int64     `gorm:"column:user_id;not null"`
 	UserName        *string    `gorm:"column:user_name;->"`
 	Year            *int       `gorm:"column:year;->"`

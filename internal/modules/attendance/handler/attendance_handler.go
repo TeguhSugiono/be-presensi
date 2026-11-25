@@ -445,6 +445,11 @@ func (h *AttendanceHandler) FindAllPaginated(c *gin.Context) {
 
 		item.CheckInLat = attendance.CheckInLat
 		item.CheckInLng = attendance.CheckInLng
+		item.IsOutOfAreaIn = attendance.IsOutOfAreaIn
+
+		if attendance.OutOfAreaNoteIn != nil {
+			item.OutOfAreaNoteIn = attendance.OutOfAreaNoteIn
+		}
 
 		if attendance.KeteranganIn != nil {
 			item.KeteranganIn = attendance.KeteranganIn

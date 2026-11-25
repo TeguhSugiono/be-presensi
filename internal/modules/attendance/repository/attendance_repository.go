@@ -22,6 +22,8 @@ type AttendanceListItem struct {
 	CheckInPhoto       *string    `gorm:"column:check_in_photo"`
 	CheckInLat         *float64   `gorm:"column:check_in_lat"`
 	CheckInLng         *float64   `gorm:"column:check_in_lng"`
+	IsOutOfAreaIn      *bool      `gorm:"column:is_out_of_area_in"`
+	OutOfAreaNoteIn    *string    `gorm:"column:out_of_area_note_in"`
 	KeteranganIn       *string    `gorm:"column:keterangan_in"`
 	IsLate             *bool      `gorm:"column:is_late"`
 	CheckOutTime       *time.Time `gorm:"column:check_out_time"`
@@ -221,6 +223,8 @@ func (r *attendanceRepository) FindAllPaginated(
 				attendances.check_in_photo,
 				attendances.check_in_lat,
 				attendances.check_in_lng,
+				attendances.is_out_of_area_in,
+				attendances.out_of_area_note_in,
 				attendances.keterangan_in,
 				attendances.is_late,
 				attendances.check_out_time,
@@ -252,6 +256,8 @@ func (r *attendanceRepository) FindAllPaginated(
 				NULL::text AS check_in_photo,
 				NULL::numeric AS check_in_lat,
 				NULL::numeric AS check_in_lng,
+				NULL::boolean AS is_out_of_area_in,
+				NULL::text AS out_of_area_note_in,
 				NULL::text AS keterangan_in,
 				NULL::boolean AS is_late,
 				NULL::timestamp AS check_out_time,
@@ -316,6 +322,8 @@ func (r *attendanceRepository) FindAllPaginated(
 			attendances.check_in_photo,
 			attendances.check_in_lat,
 			attendances.check_in_lng,
+			attendances.is_out_of_area_in,
+			attendances.out_of_area_note_in,
 			attendances.keterangan_in,
 			attendances.is_late,
 			attendances.check_out_time,
@@ -358,7 +366,9 @@ func (r *attendanceRepository) FindAllPaginated(
             OR keterangan_in ILIKE ?
             OR keterangan_out ILIKE ?
             OR out_of_area_note ILIKE ?
+			OR out_of_area_note_in ILIKE ?
         )`,
+			keyword,
 			keyword,
 			keyword,
 			keyword,

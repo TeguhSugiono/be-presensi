@@ -48,14 +48,16 @@ func ToAttendanceResponse(
 	}
 
 	response := &AttendanceResponse{
-		ID:             attendance.ID,
-		UserID:         attendance.UserID,
-		AttendanceDate: attendance.AttendanceDate.In(loc).Format(dateFormat),
-		CheckInTime:    attendance.CheckInTime.In(loc).Format(dateTimeFormat),
-		CheckInPhoto:   checkInPhotoURL,
-		CheckInLat:     attendance.CheckInLat,
-		CheckInLng:     attendance.CheckInLng,
-		KeteranganIn:   attendance.KeteranganIn,
+		ID:              attendance.ID,
+		UserID:          attendance.UserID,
+		AttendanceDate:  attendance.AttendanceDate.In(loc).Format(dateFormat),
+		CheckInTime:     attendance.CheckInTime.In(loc).Format(dateTimeFormat),
+		CheckInPhoto:    checkInPhotoURL,
+		CheckInLat:      attendance.CheckInLat,
+		CheckInLng:      attendance.CheckInLng,
+		IsOutOfAreaIn:   attendance.IsOutOfAreaIn,
+		OutOfAreaNoteIn: attendance.OutOfAreaNoteIn,
+		KeteranganIn:    attendance.KeteranganIn,
 
 		IsLate:        attendance.IsLate,
 		CheckOutPhoto: checkOutPhotoURL,
